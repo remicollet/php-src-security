@@ -440,7 +440,7 @@ static int php_read_APP(php_stream * stream, unsigned int marker, zval *info TSR
 
 	buffer = emalloc(length);
 
-	if (php_stream_read(stream, buffer, (long) length) <= 0) {
+	if (php_stream_read(stream, buffer, (long) length) != length) {
 		efree(buffer);
 		return 0;
 	}
