@@ -112,7 +112,7 @@ static inline void strip_header(char *header_bag, char *lc_header_bag,
 static zend_bool check_has_header(const char *headers, const char *header) {
 	const char *s = headers;
 	while ((s = strstr(s, header))) {
-		if (s == headers || *(s-1) == '\r' || *(s-1) == '\n' || *(s-1) == '\t' || *(s-1) == ' ') {
+		if (s == headers || *(s-1) == '\n') {
 			return 1;
 		}
 		s++;
@@ -508,8 +508,7 @@ finish:
 
 			/* remove Proxy-Authorization header */
 			if (use_proxy && use_ssl && (s = strstr(tmp, "proxy-authorization:")) &&
-			    (s == tmp || *(s-1) == '\r' || *(s-1) == '\n' ||
-			                 *(s-1) == '\t' || *(s-1) == ' ')) {
+			    (s == tmp || *(s-1) == '\n')) {
 				char *p = s + sizeof("proxy-authorization:") - 1;
 
 				while (s > tmp && (*(s-1) == ' ' || *(s-1) == '\t')) s--;
