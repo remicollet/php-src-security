@@ -13,3 +13,10 @@ Known list of providers using this repository as sources for build of old PHP ve
 ### Fedora / RHEL / CentOS / AlmaLinux / RockyLinux
 
 * [Remi's RPM repository](https://rpms.remirepo.net/)
+
+## DEB
+
+### Debian / Ubuntu
+
+* [DEB.SURY.ORG](https://deb.sury.org) - Debian [stable](https://wiki.debian.org/DebianStable) and [oldstable](https://wiki.debian.org/DebianOldStable); Ubuntu [LTS](https://ubuntu.com/about/release-cycle)
+* [PHP LTS by Freexian](https://www.freexian.com/lts/php/] - Debian [LTS](https://wiki.debian.org/LTS) and [ELTS](https://wiki.debian.org/LTS/Extended) releases; Ubuntu [LTS](https://ubuntu.com/about/release-cycle) and [ESM](https://ubuntu.com/security/esm) releases
