@@ -703,6 +703,7 @@ SAPI_API SAPI_POST_HANDLER_FUNC(rfc1867_post_handler) /* {{{ */
 	php_rfc1867_getword_conf_t getword_conf;
 	php_rfc1867_basename_t _basename;
 	long count = 0;
+	int body_parts_limit;
 
 	if (php_rfc1867_encoding_translation(TSRMLS_C) && internal_encoding) {
 		getword = php_rfc1867_getword;
@@ -722,7 +723,7 @@ SAPI_API SAPI_POST_HANDLER_FUNC(rfc1867_post_handler) /* {{{ */
 	if (body_parts_cnt < 0) {
 		body_parts_cnt = PG(max_input_vars) + upload_cnt;
 	}
-	int body_parts_limit = body_parts_cnt;
+	body_parts_limit = body_parts_cnt;
 
 	/* Get the boundary */
 	boundary = strstr(content_type_dup, "boundary");
