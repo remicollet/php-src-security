@@ -2182,6 +2182,7 @@ PHP_FUNCTION(simplexml_load_file)
 	long            options = 0;
 	zend_class_entry *ce= sxe_class_entry;
 	zend_bool       isprefix = 0;
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(read_file);
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "p|C!lsb", &filename, &filename_len, &ce, &options, &ns, &ns_len, &isprefix) == FAILURE) {
 		return;
@@ -2222,6 +2223,7 @@ PHP_FUNCTION(simplexml_load_string)
 	long            options = 0;
 	zend_class_entry *ce= sxe_class_entry;
 	zend_bool       isprefix = 0;
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(read_memory);
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|C!lsb", &data, &data_len, &ce, &options, &ns, &ns_len, &isprefix) == FAILURE) {
 		return;
@@ -2260,6 +2262,7 @@ SXE_METHOD(__construct)
 	long            options = 0;
 	zend_bool       is_url = 0, isprefix = 0;
 	zend_error_handling error_handling;
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(read_file_or_memory);
 
 	zend_replace_error_handling(EH_THROW, NULL, &error_handling TSRMLS_CC);
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|lbsb", &data, &data_len, &options, &is_url, &ns, &ns_len, &isprefix) == FAILURE) {
