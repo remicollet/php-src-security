@@ -96,6 +96,7 @@ static size_t phar_dir_read(php_stream *stream, char *buf, size_t count TSRMLS_D
 	char *str_key;
 	uint keylen;
 	ulong unused;
+	php_stream_dirent *dirent;
 
 	if (count != sizeof(php_stream_dirent)) {
 		return -1;
@@ -107,7 +108,7 @@ static size_t phar_dir_read(php_stream *stream, char *buf, size_t count TSRMLS_D
 
 	zend_hash_move_forward(data);
 
-	php_stream_dirent *dirent = (php_stream_dirent *) buf;
+	dirent = (php_stream_dirent *) buf;
 
 	if (sizeof(dirent->d_name) <= keylen) {
 		return 0;
