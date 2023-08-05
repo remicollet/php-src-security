@@ -1853,6 +1853,7 @@ PHP_FUNCTION(dom_document_xinclude)
 	long flags = 0;
 	int err;
 	dom_object *intern;
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(xinclude);
 
 	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O|l", &id, dom_document_class_entry, &flags) == FAILURE) {
 		return;
@@ -1894,6 +1895,7 @@ PHP_FUNCTION(dom_document_validate)
 	xmlDoc *docp;
 	dom_object *intern;
 	xmlValidCtxt *cvp;
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(validate);
 
 	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &id, dom_document_class_entry) == FAILURE) {
 		return;
@@ -1934,6 +1936,7 @@ static void _dom_document_schema_validate(INTERNAL_FUNCTION_PARAMETERS, int type
 	xmlSchemaValidCtxtPtr   vptr;
 	int                     is_valid;
 	char resolved_path[MAXPATHLEN + 1];
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(new_parser_ctxt);
 
 	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os|l", &id, dom_document_class_entry, &source, &source_len, &flags) == FAILURE) {
 		return;
@@ -1999,18 +2002,21 @@ static void _dom_document_schema_validate(INTERNAL_FUNCTION_PARAMETERS, int type
 	}
 #endif
 
-	PHP_LIBXML_SANITIZE_GLOBALS(validate);
-	xmlSchemaSetValidOptions(vptr, valid_opts);
-	xmlSchemaSetValidErrors(vptr, php_libxml_error_handler, php_libxml_error_handler, vptr);
-	is_valid = xmlSchemaValidateDoc(vptr, docp);
-	xmlSchemaFree(sptr);
-	xmlSchemaFreeValidCtxt(vptr);
-	PHP_LIBXML_RESTORE_GLOBALS(validate);
+	if (vptr) {
+		PHP_LIBXML_SANITIZE_GLOBALS_DECL(validate);
+		PHP_LIBXML_SANITIZE_GLOBALS(validate);
+		xmlSchemaSetValidOptions(vptr, valid_opts);
+		xmlSchemaSetValidErrors(vptr, php_libxml_error_handler, php_libxml_error_handler, vptr);
+		is_valid = xmlSchemaValidateDoc(vptr, docp);
+		xmlSchemaFree(sptr);
+		xmlSchemaFreeValidCtxt(vptr);
+		PHP_LIBXML_RESTORE_GLOBALS(validate);
 
-	if (is_valid == 0) {
-		RETURN_TRUE;
-	} else {
-		RETURN_FALSE;
+		if (is_valid == 0) {
+			RETURN_TRUE;
+		} else {
+			RETURN_FALSE;
+		}
 	}
 }
 /* }}} */
@@ -2041,6 +2047,7 @@ static void _dom_document_relaxNG_validate(INTERNAL_FUNCTION_PARAMETERS, int typ
 	xmlRelaxNGValidCtxtPtr  vptr;
 	int                     is_valid;
 	char resolved_path[MAXPATHLEN + 1];
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(parse);
 
 	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os", &id, dom_document_class_entry, &source, &source_len) == FAILURE) {
 		return;

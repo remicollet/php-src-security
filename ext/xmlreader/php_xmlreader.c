@@ -283,6 +283,7 @@ static xmlRelaxNGPtr _xmlreader_get_relaxNG(char *source, int source_len, int ty
 	xmlRelaxNGParserCtxtPtr parser = NULL;
 	xmlRelaxNGPtr           sptr;
 	char resolved_path[MAXPATHLEN + 1];
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(parse);
 
 	switch (type) {
 	case XMLREADER_LOAD_FILE:
@@ -888,6 +889,7 @@ PHP_METHOD(xmlreader, open)
 	valid_file = _xmlreader_get_valid_file_path(source, resolved_path, MAXPATHLEN  TSRMLS_CC);
 
 	if (valid_file) {
+		PHP_LIBXML_SANITIZE_GLOBALS_DECL(reader_for_file);
 		PHP_LIBXML_SANITIZE_GLOBALS(reader_for_file);
 		reader = xmlReaderForFile(valid_file, encoding, options);
 		PHP_LIBXML_RESTORE_GLOBALS(reader_for_file);
@@ -967,6 +969,7 @@ PHP_METHOD(xmlreader, setSchema)
 
 	intern = (xmlreader_object *)zend_object_store_get_object(id TSRMLS_CC);
 	if (intern && intern->ptr) {
+		PHP_LIBXML_SANITIZE_GLOBALS_DECL(schema);
 		PHP_LIBXML_SANITIZE_GLOBALS(schema);
 		retval = xmlTextReaderSchemaValidate(intern->ptr, source);
 		PHP_LIBXML_RESTORE_GLOBALS(schema);
@@ -1075,6 +1078,7 @@ PHP_METHOD(xmlreader, XML)
 	inputbfr = xmlParserInputBufferCreateMem(source, source_len, XML_CHAR_ENCODING_NONE);
 
     if (inputbfr != NULL) {
+		PHP_LIBXML_SANITIZE_GLOBALS_DECL(text_reader);
 /* Get the URI of the current script so that we can set the base directory in libxml */
 #if HAVE_GETCWD
 		directory = VCWD_GETCWD(resolved_path, MAXPATHLEN);

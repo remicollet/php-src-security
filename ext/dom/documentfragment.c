@@ -140,6 +140,7 @@ PHP_METHOD(domdocumentfragment, appendXML) {
 	}
 
 	if (data) {
+		PHP_LIBXML_SANITIZE_GLOBALS_DECL(parse);
 		PHP_LIBXML_SANITIZE_GLOBALS(parse);
 		err = xmlParseBalancedChunkMemory(nodep->doc, NULL, NULL, 0, data, &lst);
 		PHP_LIBXML_RESTORE_GLOBALS(parse);

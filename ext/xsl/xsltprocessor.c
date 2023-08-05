@@ -412,6 +412,7 @@ PHP_FUNCTION(xsl_xsltprocessor_import_stylesheet)
 	xmlNode *nodep = NULL;
 	zend_object_handlers *std_hnd;
 	zval *cloneDocu, *member;
+	PHP_LIBXML_SANITIZE_GLOBALS_DECL(parse);
 
 	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Oo", &id, xsl_xsltprocessor_class_entry, &docp) == FAILURE) {
 		RETURN_FALSE;

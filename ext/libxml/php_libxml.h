@@ -115,15 +115,23 @@ PHP_LIBXML_API void php_libxml_shutdown(void);
  * See libxml2 globals.c and parserInternals.c.
  * The unique_name argument allows multiple sanitizes and restores within the
  * same function, even nested is necessary. */
+#define PHP_LIBXML_SANITIZE_GLOBALS_DECL(unique_name) \
+	int xml_old_loadsubset_##unique_name; \
+	int xml_old_validate_##unique_name; \
+	int xml_old_pedantic_##unique_name; \
+	int xml_old_substitute_##unique_name; \
+	int xml_old_linenrs_##unique_name; \
+	int xml_old_blanks_##unique_name;
+
 #define PHP_LIBXML_SANITIZE_GLOBALS(unique_name) \
-	int xml_old_loadsubset_##unique_name = xmlLoadExtDtdDefaultValue; \
+	xml_old_loadsubset_##unique_name = xmlLoadExtDtdDefaultValue; \
 	xmlLoadExtDtdDefaultValue = 0; \
-	int xml_old_validate_##unique_name = xmlDoValidityCheckingDefaultValue; \
+	xml_old_validate_##unique_name = xmlDoValidityCheckingDefaultValue; \
 	xmlDoValidityCheckingDefaultValue = 0; \
-	int xml_old_pedantic_##unique_name = xmlPedanticParserDefault(0); \
-	int xml_old_substitute_##unique_name = xmlSubstituteEntitiesDefault(0); \
-	int xml_old_linenrs_##unique_name = xmlLineNumbersDefault(0); \
-	int xml_old_blanks_##unique_name = xmlKeepBlanksDefault(1);
+	xml_old_pedantic_##unique_name = xmlPedanticParserDefault(0); \
+	xml_old_substitute_##unique_name = xmlSubstituteEntitiesDefault(0); \
+	xml_old_linenrs_##unique_name = xmlLineNumbersDefault(0); \
+	xml_old_blanks_##unique_name = xmlKeepBlanksDefault(1);
 
 #define PHP_LIBXML_RESTORE_GLOBALS(unique_name) \
 	xmlLoadExtDtdDefaultValue = xml_old_loadsubset_##unique_name; \
