@@ -1851,10 +1851,12 @@ int main(int argc, char *argv[])
 #ifdef PHP_WIN32
 		if (*p >= 0x80) {
 			wchar_t wide_buf[1];
-			wide_buf[0] = *p;
 			char char_buf[4];
-			size_t wide_buf_len = sizeof(wide_buf) / sizeof(wide_buf[0]);
-			size_t char_buf_len = sizeof(char_buf) / sizeof(char_buf[0]);
+			size_t wide_buf_len;
+			size_t char_buf_len;
+			wide_buf[0] = *p;
+			wide_buf_len = sizeof(wide_buf) / sizeof(wide_buf[0]);
+			char_buf_len = sizeof(char_buf) / sizeof(char_buf[0]);
 			if (WideCharToMultiByte(CP_ACP, 0, wide_buf, wide_buf_len, char_buf, char_buf_len, NULL, NULL) == 0
 				|| char_buf[0] == '-') {
 				skip_getopt = 1;
