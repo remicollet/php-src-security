@@ -5,6 +5,8 @@ GHSA-9fcc-425m-g385 - bypass CVE-2024-1874 - exhaustive suffix test
 if( substr(PHP_OS, 0, 3) != "WIN" )
   die('skip Run only on Windows');
 ?>
+--XFAIL--
+Before PHP 8.0.0 we would need to add extra quotes.
 --FILE--
 <?php
 
