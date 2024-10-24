@@ -292,7 +292,7 @@ free_statement:
 static int firebird_handle_quoter(pdo_dbh_t *dbh, const char *unquoted, int unquotedlen, /* {{{ */
 	char **quoted, int *quotedlen, enum pdo_param_type paramtype TSRMLS_DC)
 {
-	int qcount = 0;
+	size_t qcount = 0;
 	char const *co, *l, *r;
 	char *c;
 	
@@ -307,6 +307,10 @@ static int firebird_handle_quoter(pdo_dbh_t *dbh, const char *unquoted, int unqu
 	/* count the number of ' characters */
 	for (co = unquoted; (co = strchr(co,'\'')); qcount++, co++);
 	
+	if (UNEXPECTED((size_t)unquotedlen + 2 > INT_MAX - qcount)) {
+		return 0;
+	}
+
 	*quotedlen = unquotedlen + qcount + 2;
 	*quoted = c = emalloc(*quotedlen+1);		
 	*c++ = '\'';
