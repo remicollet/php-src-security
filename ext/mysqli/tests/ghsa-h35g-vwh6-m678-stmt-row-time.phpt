@@ -47,7 +47,7 @@ print "done!";
 [*] Received: 0a00000017010000000001000000
 [*] Sending - Malicious Stmt Response for data timval [Extract heap through buffer over-read]: 01000001023200000203646566087068705f74657374046461746104646174610673747276616c0673747276616c0ce000c8000000fd01100000003200000303646566087068705f74657374046461746104646174610674696d76616c0674696d76616c0c3f000a0000000b811000000005000004fe000022001000000500000c7465737408000000000015080105000006fe00002200
 
-Warning: mysqli_result::fetch_assoc(): Malformed server packet. Field length pointing after the end of packet in %s on line %d
+Warning: mysqli_result::fetch_assoc(): Malformed server packet. Field length pointing after the end of packet in %s on line %A
 [*] Received: 0500000019010000000100000001
 [*] Server finished
 done!

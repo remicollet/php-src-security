@@ -176,6 +176,6 @@ object(stdClass)#%d (13) {
   [%u|b%"type"]=>
   int(253)
   [%u|b%"decimals"]=>
-  int(31)
+  int(3%d)
 }
 done!
