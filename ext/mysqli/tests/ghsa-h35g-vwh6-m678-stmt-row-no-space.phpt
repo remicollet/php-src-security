@@ -47,7 +47,7 @@ print "done!";
 [*] Received: 0a00000017010000000001000000
 [*] Sending - Malicious Stmt Response for data strval [Extract heap through buffer over-read]: 01000001023200000203646566087068705f74657374046461746104646174610673747276616c0673747276616c0ce000c8000000fd01100000003200000303646566087068705f74657374046461746104646174610673747276616c0673747276616c0ce000c8000000fd011000000005000004fe000022000c00000500000974657374047465737405000006fe00002200
 
-Warning: mysqli_result::fetch_assoc(): Malformed server packet. No packet space left for the field in %s on line %d
+Warning: mysqli_result::fetch_assoc(): Malformed server packet. No packet space left for the field in %s on line %A
 [*] Received: 0500000019010000000100000001
 [*] Server finished
 done!

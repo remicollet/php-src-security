@@ -11,7 +11,10 @@ if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
 		$host, $user, $db, $port, $socket));
 
 if (mysqli_get_server_version($link) < 50600)
-	die("SKIP For MySQL >= 5.6.0");
+    die("SKIP For MySQL >= 5.6.0");
+
+if (mysqli_get_server_version($link) >= 100000)
+    die("SKIP Not applicable for MariaDB");
 ?>
 --FILE--
 <?php
