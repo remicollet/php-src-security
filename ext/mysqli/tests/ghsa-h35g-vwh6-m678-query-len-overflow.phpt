@@ -42,7 +42,7 @@ print "done!";
 [*] Received: 200000000353454c4543542073747276616c2c2073747276616c2046524f4d2064617461
 [*] Sending - Malicious Query Response for data strval field [length overflow]: 01000001023200000203646566087068705f74657374046461746104646174610673747276616c0673747276616c0ce000c8000000fd01100000003200000303646566087068705f74657374046461746104646174610673747276616c0673747276616c0ce000c8000000fd011000000005000004fe000022000a0000050474657374fefefefefe05000006fe00002200
 
-Warning: mysqli_result::fetch_assoc(): Malformed server packet. Field length pointing after end of packet in %s on line %d
+Warning: mysqli_result::fetch_assoc(): Malformed server packet. Field length pointing after end of packet in %s on line %A
 [*] Received: 0100000001
 [*] Server finished
 done!

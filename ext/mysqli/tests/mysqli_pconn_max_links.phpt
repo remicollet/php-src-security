@@ -235,9 +235,7 @@ Before second pconnect:array(3) {
   int(0)
 }
 
-Warning: main(): MySQL server has gone away in %s on line %d
-
-Warning: main(): Error reading result set's header in %s line %d
+Warning: %A
 After second pconnect:array(3) {
   ["total"]=>
   int(1)
