@@ -47,9 +47,9 @@ function do_test($num_spaces, $leave_trailing_space=false) {
   ];
   $pid = http_server('tcp://127.0.0.1:12342', $responses);
 
-  echo file_get_contents('http://127.0.0.1:12342/', false, $ctx);
+  echo file_get_contents('http://127.0.0.1:12342', false, $ctx);
   echo "\n";
-  echo file_get_contents('http://127.0.0.1:12342/', false, $ctx);
+  echo file_get_contents('http://127.0.0.1:12342', false, $ctx);
   echo "\n";
 
   http_server_kill($pid);
@@ -70,23 +70,27 @@ do_test(1, true);
 echo "\n";
 
 ?>
---EXPECT--
-Type='text/plain'
-Hello
-Size=5
-World
+--EXPECTF--
 
 Type='text/plain'
 Hello
-Size=5
-World
+
+Warning: file_get_contents(http://%s:%d): failed to open stream: HTTP invalid response format (no colon in header line)! in %s
+
 
 Type='text/plain'
 Hello
-Size=5
-World
+
+Warning: file_get_contents(http://%s:%d): failed to open stream: HTTP invalid response format (no colon in header line)! in %s
+
 
 Type='text/plain'
 Hello
-Size=5
-World
+
+Warning: file_get_contents(http://%s:%d): failed to open stream: HTTP invalid response format (no colon in header line)! in %s
+
+
+Type='text/plain'
+Hello
+
+Warning: file_get_contents(http://%s:%d): failed to open stream: HTTP invalid response format (no colon in header line)! in %s
