@@ -3910,7 +3910,7 @@ PHP_NAMED_FUNCTION(php_inet_pton)
 	size_t address_len;
 	char buffer[17];
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &address, &address_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "p", &address, &address_len) == FAILURE) {
 		RETURN_FALSE;
 	}
 
@@ -3950,7 +3950,7 @@ PHP_FUNCTION(ip2long)
 	zend_ulong ip;
 #endif
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &addr, &addr_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "p", &addr, &addr_len) == FAILURE) {
 		return;
 	}
 
@@ -5542,7 +5542,7 @@ PHP_FUNCTION(getservbyname)
 	size_t name_len, proto_len;
 	struct servent *serv;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ss", &name, &name_len, &proto, &proto_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "pp", &name, &name_len, &proto, &proto_len) == FAILURE) {
 		return;
 	}
 
@@ -5585,7 +5585,7 @@ PHP_FUNCTION(getservbyport)
 	zend_long port;
 	struct servent *serv;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ls", &port, &proto, &proto_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "lp", &port, &proto, &proto_len) == FAILURE) {
 		return;
 	}
 
@@ -5609,7 +5609,7 @@ PHP_FUNCTION(getprotobyname)
 	size_t name_len;
 	struct protoent *ent;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &name, &name_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "p", &name, &name_len) == FAILURE) {
 		return;
 	}
 
