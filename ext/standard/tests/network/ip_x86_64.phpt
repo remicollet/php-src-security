@@ -54,7 +54,7 @@ bool(false)
 bool(false)
 int(1869573999)
 
-Warning: ip2long() expects parameter 1 to be string, array given in %sip_x86_64.php on line %d
+Warning: ip2long() expects parameter 1 to be a valid path, array given in %sip_x86_64.php on line %d
 NULL
 
 Warning: long2ip() expects exactly 1 parameter, 0 given in %sip_x86_64.php on line %d

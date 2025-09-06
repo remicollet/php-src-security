@@ -368,7 +368,7 @@ PHP_FUNCTION(dns_check_record)
 #endif
 
 	ZEND_PARSE_PARAMETERS_START(1, 2)
-		Z_PARAM_STRING(hostname, hostname_len)
+		Z_PARAM_PATH(hostname, hostname_len)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_STRING(rectype, rectype_len)
 	ZEND_PARSE_PARAMETERS_END();
@@ -815,7 +815,7 @@ PHP_FUNCTION(dns_get_record)
 	zend_bool raw = 0;
 
 	ZEND_PARSE_PARAMETERS_START(1, 5)
-		Z_PARAM_STRING(hostname, hostname_len)
+		Z_PARAM_PATH(hostname, hostname_len)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_LONG(type_param)
 		Z_PARAM_ZVAL_DEREF_EX(authns, 1, 0)
@@ -1050,7 +1050,7 @@ PHP_FUNCTION(dns_get_mx)
 #endif
 
 	ZEND_PARSE_PARAMETERS_START(2, 3)
-		Z_PARAM_STRING(hostname, hostname_len)
+		Z_PARAM_PATH(hostname, hostname_len)
 		Z_PARAM_ZVAL_DEREF(mx_list)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL_DEREF(weight_list)
