@@ -1126,7 +1126,7 @@ PHPAPI zend_string *_php_math_number_format_ex(double d, int dec, char *dec_poin
 	tmpbuf = strpprintf(0, "%.*F", dec, d);
 	if (tmpbuf == NULL) {
 		return NULL;
-	} else if (!isdigit((int)ZSTR_VAL(tmpbuf)[0])) {
+	} else if (!isdigit((unsigned char)ZSTR_VAL(tmpbuf)[0])) {
 		return tmpbuf;
 	}
 
