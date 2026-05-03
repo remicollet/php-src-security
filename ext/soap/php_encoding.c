@@ -383,6 +383,11 @@ static zend_bool soap_check_xml_ref(zval **data, xmlNodePtr node TSRMLS_DC)
 				return 1;
 			}
 		} else {
+			/* Hold a reference, the value may be released (e.g. a duplicate Apache Map key)
+			   while it is still reachable through href. Only decoding stores zvals in the
+			   map, encoding stores xmlNodePtr, so the destructor is set here. */
+			Z_ADDREF_PP(data);
+			SOAP_GLOBAL(ref_map)->pDestructor = ZVAL_PTR_DTOR;
 			zend_hash_index_update(SOAP_GLOBAL(ref_map), (ulong)node, (void**)data, sizeof(zval*), NULL);
 		}
 	}
