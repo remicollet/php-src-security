@@ -484,7 +484,7 @@ CWD_API void virtual_cwd_startup(void) /* {{{ */
 	main_cwd_state.cwd_length = (int)strlen(cwd);
 #ifdef ZEND_WIN32
 	if (main_cwd_state.cwd_length >= 2 && cwd[1] == ':') {
-		cwd[0] = toupper(cwd[0]);
+		cwd[0] = toupper((unsigned char)cwd[0]);
 	}
 #endif
 	main_cwd_state.cwd = strdup(cwd);
@@ -563,7 +563,7 @@ CWD_API char *virtual_getcwd_ex(size_t *length) /* {{{ */
 			return NULL;
 		}
 		memcpy(retval, state->cwd, *length);
-		retval[0] = toupper(retval[0]);
+		retval[0] = toupper((unsigned char)retval[0]);
 		retval[*length-1] = DEFAULT_SLASH;
 		retval[*length] = '\0';
 		return retval;
@@ -1296,7 +1296,7 @@ CWD_API int virtual_file_ex(cwd_state *state, const char *path, verify_path_func
 			if (resolved_path[start] == 0) {
 				goto verify;
 			}
-			resolved_path[start] = toupper(resolved_path[start]);
+			resolved_path[start] = toupper((unsigned char)resolved_path[start]);
 			start++;
 		}
 		resolved_path[start++] = DEFAULT_SLASH;
@@ -1304,13 +1304,13 @@ CWD_API int virtual_file_ex(cwd_state *state, const char *path, verify_path_func
 			if (resolved_path[start] == 0) {
 				goto verify;
 			}
-			resolved_path[start] = toupper(resolved_path[start]);
+			resolved_path[start] = toupper((unsigned char)resolved_path[start]);
 			start++;
 		}
 		resolved_path[start++] = DEFAULT_SLASH;
 	} else if (IS_ABSOLUTE_PATH(resolved_path, path_length)) {
 		/* skip DRIVE name */
-		resolved_path[0] = toupper(resolved_path[0]);
+		resolved_path[0] = toupper((unsigned char)resolved_path[0]);
 		resolved_path[2] = DEFAULT_SLASH;
 		start = 3;
 	}

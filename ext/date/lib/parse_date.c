@@ -486,7 +486,7 @@ static timelib_sll timelib_get_nr(char **ptr, int max_length)
 
 static void timelib_skip_day_suffix(char **ptr)
 {
-	if (isspace(**ptr)) {
+	if (isspace((unsigned char)**ptr)) {
 		return;
 	}
 	if (!strncasecmp(*ptr, "nd", 2) || !strncasecmp(*ptr, "rd", 2) ||!strncasecmp(*ptr, "st", 2) || !strncasecmp(*ptr, "th", 2)) {
@@ -23856,10 +23856,10 @@ timelib_time* timelib_strtotime(char *s, size_t len, struct timelib_error_contai
 	in.errors->error_messages = NULL;
 
 	if (len > 0) {
-		while (isspace(*s) && s < e) {
+		while (isspace((unsigned char)*s) && s < e) {
 			s++;
 		}
-		while (isspace(*e) && e > s) {
+		while (isspace((unsigned char)*e) && e > s) {
 			e--;
 		}
 	}

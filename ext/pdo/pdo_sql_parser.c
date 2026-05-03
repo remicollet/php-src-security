@@ -417,7 +417,7 @@ PDO_API int pdo_parse_params(pdo_stmt_t *stmt, char *inquery, size_t inquery_len
 		if (t == PDO_PARSER_BIND || t == PDO_PARSER_BIND_POS) {
 			if (t == PDO_PARSER_BIND) {
 				int len = s.cur - s.tok;
-				if ((inquery < (s.cur - len)) && isalnum(*(s.cur - len - 1))) {
+				if ((inquery < (s.cur - len)) && isalnum((unsigned char)s.cur[-len - 1])) {
 					continue;
 				}
 				query_type |= PDO_PLACEHOLDER_NAMED;

@@ -84,7 +84,7 @@ static PHP_INI_MH(OnUpdateTags)
 
 			*val++ = '\0';
 			for (q = key; *q; q++)
-				*q = tolower(*q);
+				*q = tolower((unsigned char)*q);
 			keylen = q - key;
 			/* key is stored withOUT NUL
 			   val is stored WITH    NUL */
@@ -357,7 +357,7 @@ static inline void handle_tag(STD_PARA)
 	}
 	smart_str_appendl(&ctx->tag, start, YYCURSOR - start);
 	for (i = 0; i < ZSTR_LEN(ctx->tag.s); i++)
-		ZSTR_VAL(ctx->tag.s)[i] = tolower((int)(unsigned char)ZSTR_VAL(ctx->tag.s)[i]);
+		ZSTR_VAL(ctx->tag.s)[i] = tolower((unsigned char)ZSTR_VAL(ctx->tag.s)[i]);
     /* intentionally using str_find here, in case the hash value is set, but the string val is changed later */
 	if ((ctx->lookup_data = zend_hash_str_find_ptr(ctx->tags, ZSTR_VAL(ctx->tag.s), ZSTR_LEN(ctx->tag.s))) != NULL)
 		ok = 1;
