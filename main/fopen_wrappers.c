@@ -486,7 +486,7 @@ PHPAPI zend_string *php_resolve_path(const char *filename, int filename_length, 
 	}
 
 	/* Don't resolve paths which contain protocol (except of file://) */
-	for (p = filename; isalnum((int)*p) || *p == '+' || *p == '-' || *p == '.'; p++);
+	for (p = filename; isalnum((unsigned char)*p) || *p == '+' || *p == '-' || *p == '.'; p++);
 	if ((*p == ':') && (p - filename > 1) && (p[1] == '/') && (p[2] == '/')) {
 		wrapper = php_stream_locate_url_wrapper(filename, &actual_path, STREAM_OPEN_FOR_INCLUDE);
 		if (wrapper == &php_plain_files_wrapper) {
@@ -522,7 +522,7 @@ PHPAPI zend_string *php_resolve_path(const char *filename, int filename_length, 
 		/* Check for stream wrapper */
 		int is_stream_wrapper = 0;
 
-		for (p = ptr; isalnum((int)*p) || *p == '+' || *p == '-' || *p == '.'; p++);
+		for (p = ptr; isalnum((unsigned char)*p) || *p == '+' || *p == '-' || *p == '.'; p++);
 		if ((*p == ':') && (p - ptr > 1) && (p[1] == '/') && (p[2] == '/')) {
 			/* .:// or ..:// is not a stream wrapper */
 			if (p[-1] != '.' || p[-2] != '.' || p - 2 != ptr) {
@@ -588,7 +588,7 @@ PHPAPI zend_string *php_resolve_path(const char *filename, int filename_length, 
 			actual_path = trypath;
 
 			/* Check for stream wrapper */
-			for (p = trypath; isalnum((int)*p) || *p == '+' || *p == '-' || *p == '.'; p++);
+			for (p = trypath; isalnum((unsigned char)*p) || *p == '+' || *p == '-' || *p == '.'; p++);
 			if ((*p == ':') && (p - trypath > 1) && (p[1] == '/') && (p[2] == '/')) {
 				wrapper = php_stream_locate_url_wrapper(trypath, &actual_path, STREAM_OPEN_FOR_INCLUDE);
 				if (!wrapper) {

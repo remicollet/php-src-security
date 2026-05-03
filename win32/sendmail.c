@@ -63,7 +63,7 @@
 												efree(response); \
 											} \
 										}
-#define SMTP_SKIP_SPACE(str)	{ while (isspace(*str)) { str++; } }
+#define SMTP_SKIP_SPACE(str)	{ while (isspace((unsigned char)*(str))) { (str)++; } }
 
 
 char seps[] = " ,\t\n";
@@ -684,7 +684,7 @@ static int PostHeader(char *RPath, char *Subject, char *mailTo, char *xheaders)
 		headers_lc_len = strlen(headers_lc);
 
 		for (i = 0; i < headers_lc_len; i++) {
-			headers_lc[i] = tolower(headers_lc[i]);
+			headers_lc[i] = tolower((unsigned char)headers_lc[i]);
 		}
 	}
 
@@ -812,7 +812,7 @@ return 0;
 
 	/* Resolve the servers IP */
 	/*
-	if (!isdigit(PW32G(mail_host)[0])||!gethostbyname(PW32G(mail_host)))
+	if (!isdigit((unsigned char)PW32G(mail_host)[0])||!gethostbyname(PW32G(mail_host)))
 	{
 		return (FAILED_TO_RESOLVE_HOST);
 	}
