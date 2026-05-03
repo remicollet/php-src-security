@@ -1216,7 +1216,7 @@ static int strToMatch(const char* str ,char *retstr)
 		if( *str == '-' ){
 			*retstr =  '_';
 		} else {
-			*retstr = tolower(*str);
+			*retstr = tolower((unsigned char)*str);
 		}
             str++;
             retstr++;

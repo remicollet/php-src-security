@@ -454,10 +454,10 @@ php_formatted_print(zend_execute_data *execute_data, int use_array, int format_o
 
 			PRINTF_DEBUG(("sprintf: first looking at '%c', inpos=%d\n",
 						  format[inpos], inpos));
-			if (isascii((int)format[inpos]) && !isalpha((int)format[inpos])) {
+			if (isascii((unsigned char)format[inpos]) && !isalpha((unsigned char)format[inpos])) {
 				/* first look for argnum */
 				temppos = inpos;
-				while (isdigit((int)format[temppos])) temppos++;
+				while (isdigit((unsigned char)format[temppos])) temppos++;
 				if (format[temppos] == '$') {
 					argnum = php_sprintf_getnumber(format, &inpos);
 
@@ -502,7 +502,7 @@ php_formatted_print(zend_execute_data *execute_data, int use_array, int format_o
 
 
 				/* after modifiers comes width */
-				if (isdigit((int)format[inpos])) {
+				if (isdigit((unsigned char)format[inpos])) {
 					PRINTF_DEBUG(("sprintf: getting width\n"));
 					if ((width = php_sprintf_getnumber(format, &inpos)) < 0) {
 						efree(result);
@@ -522,7 +522,7 @@ php_formatted_print(zend_execute_data *execute_data, int use_array, int format_o
 				if (format[inpos] == '.') {
 					inpos++;
 					PRINTF_DEBUG(("sprintf: getting precision\n"));
-					if (isdigit((int)format[inpos])) {
+					if (isdigit((unsigned char)format[inpos])) {
 						if ((precision = php_sprintf_getnumber(format, &inpos)) < 0) {
 							efree(result);
 							if (newargs) {

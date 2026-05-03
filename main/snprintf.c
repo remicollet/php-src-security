@@ -396,7 +396,7 @@ PHPAPI char * php_conv_fp(register char format, register double num,
 	/*
 	 * Check for Infinity and NaN
 	 */
-	if (isalpha((int)*p)) {
+	if (isalpha((unsigned char)*p)) {
 		*len = strlen(p);
 		memcpy(buf, p, *len + 1);
 		*is_negative = FALSE;
@@ -543,11 +543,11 @@ typedef struct buf_area buffy;
 #define NUM( c )			( c - '0' )
 
 #define STR_TO_DEC( str, num )		\
-    num = NUM( *str++ ) ;		\
-    while ( isdigit((int)*str ) )		\
+    num = NUM( *(str)++ ) ;		\
+    while ( isdigit((unsigned char)*(str) ) )		\
     {					\
 	num *= 10 ;			\
-	num += NUM( *str++ ) ;		\
+	num += NUM( *(str)++ ) ;		\
     }
 
 /*
@@ -653,7 +653,7 @@ static int format_converter(register buffy * odp, const char *fmt, va_list ap) /
 			/*
 			 * Try to avoid checking for flags, width or precision
 			 */
-			if (isascii((int)*fmt) && !islower((int)*fmt)) {
+			if (isascii((unsigned char)*fmt) && !islower((unsigned char)*fmt)) {
 				/*
 				 * Recognize flags: -, #, BLANK, +
 				 */
@@ -675,7 +675,7 @@ static int format_converter(register buffy * odp, const char *fmt, va_list ap) /
 				/*
 				 * Check if a width was specified
 				 */
-				if (isdigit((int)*fmt)) {
+				if (isdigit((unsigned char)*fmt)) {
 					STR_TO_DEC(fmt, min_width);
 					adjust_width = YES;
 				} else if (*fmt == '*') {
@@ -695,7 +695,7 @@ static int format_converter(register buffy * odp, const char *fmt, va_list ap) /
 				if (*fmt == '.') {
 					adjust_precision = YES;
 					fmt++;
-					if (isdigit((int)*fmt)) {
+					if (isdigit((unsigned char)*fmt)) {
 						STR_TO_DEC(fmt, precision);
 					} else if (*fmt == '*') {
 						precision = va_arg(ap, int);

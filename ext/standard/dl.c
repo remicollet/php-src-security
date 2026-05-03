@@ -89,7 +89,7 @@ PHPAPI void *php_load_shlib(char *path, char **errp)
 			size_t i = strlen(err);
 			(*errp)=estrdup(err);
 			LocalFree(err);
-			while (i > 0 && isspace((*errp)[i-1])) { (*errp)[i-1] = '\0'; i--; }
+			while (i > 0 && isspace((unsigned char)(*errp)[i-1])) { (*errp)[i-1] = '\0'; i--; }
 		} else {
 			(*errp) = estrdup("<No message>");
 		}

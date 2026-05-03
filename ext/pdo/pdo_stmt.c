@@ -210,7 +210,7 @@ int pdo_stmt_describe_columns(pdo_stmt_t *stmt) /* {{{ */
 			switch (stmt->dbh->desired_case) {
 				case PDO_CASE_UPPER:
 					while (*s != '\0') {
-						*s = toupper(*s);
+						*s = toupper((unsigned char)*s);
 						s++;
 					}
 					break;
