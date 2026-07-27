@@ -5750,7 +5750,6 @@ static int php_pgsql_add_quotes(zval *src, zend_bool should_free TSRMLS_DC)
 	assert(Z_TYPE_P(src) == IS_STRING);
 	assert(should_free == 1 || should_free == 0);
 
-	smart_str_appendc(&str, 'E');
 	smart_str_appendc(&str, '\'');
 	smart_str_appendl(&str, Z_STRVAL_P(src), Z_STRLEN_P(src));
 	smart_str_appendc(&str, '\'');
@@ -6040,7 +6039,6 @@ PHP_PGSQL_API int php_pgsql_convert(PGconn *pg_link, const char *table_name, con
 							/* PostgreSQL ignores \0 */
 							Z_TYPE_P(new_val) = IS_STRING;
 							tmp = (char *)safe_emalloc(Z_STRLEN_PP(val), 2, 1);
-							/* better to use PGSQLescapeLiteral since PGescapeStringConn does not handle special \ */
 							Z_STRLEN_P(new_val) = (int)PQescapeStringConn(pg_link, tmp, Z_STRVAL_PP(val), Z_STRLEN_PP(val), NULL);
 							Z_STRVAL_P(new_val) = tmp;
 							php_pgsql_add_quotes(new_val, 1 TSRMLS_CC);
