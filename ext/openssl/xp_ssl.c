@@ -402,7 +402,8 @@ static zend_bool php_openssl_matches_wildcard_name(const char *subjectname, cons
 }
 /* }}} */
 
-static zend_bool php_openssl_matches_san_list(X509 *peer, const char *subject_name) /* {{{ */
+static zend_bool php_openssl_matches_san_list(
+		X509 *peer, const char *subject_name, zend_bool *has_service_id)
 {
 	int i, len;
 	unsigned char *cert_name = NULL;
@@ -411,10 +412,14 @@ static zend_bool php_openssl_matches_san_list(X509 *peer, const char *subject_na
 	GENERAL_NAMES *alt_names = X509_get_ext_d2i(peer, NID_subject_alt_name, 0, 0);
 	int alt_name_count = sk_GENERAL_NAME_num(alt_names);
 
+	*has_service_id = 0;
+
 	for (i = 0; i < alt_name_count; i++) {
 		GENERAL_NAME *san = sk_GENERAL_NAME_value(alt_names, i);
 
 		if (san->type == GEN_DNS) {
+			*has_service_id = 1;
+
 			ASN1_STRING_to_UTF8(&cert_name, san->d.dNSName);
 			if ((size_t)ASN1_STRING_length(san->d.dNSName) != strlen((const char*)cert_name)) {
 				OPENSSL_free(cert_name);
@@ -453,6 +458,16 @@ static zend_bool php_openssl_matches_san_list(X509 *peer, const char *subject_na
 			 * Because IP SAN names are officially deprecated and are
 			 * not allowed by CAs starting in 2015. Deal with it.
 			 */
+		} else if (san->type == GEN_URI) {
+			*has_service_id = 1;
+		} else if (san->type == GEN_OTHERNAME) {
+			char oid[32];
+
+			/* SRV-ID, matched by OID because NID_SRVName needs OpenSSL 3.0 */
+			if (OBJ_obj2txt(oid, sizeof(oid), san->d.otherName->type_id, 1) > 0
+					&& strcmp(oid, "1.3.6.1.5.5.7.8.7") == 0) {
+				*has_service_id = 1;
+			}
 		}
 	}
 
@@ -460,7 +475,6 @@ static zend_bool php_openssl_matches_san_list(X509 *peer, const char *subject_na
 
 	return 0;
 }
-/* }}} */
 
 static zend_bool php_openssl_matches_common_name(X509 *peer, const char *subject_name) /* {{{ */
 {
@@ -566,8 +580,16 @@ static int php_openssl_apply_peer_verification_policy(SSL *ssl, X509 *peer, php_
 		}
 
 		if (peer_name) {
-			if (php_openssl_matches_san_list(peer, peer_name)) {
+			zend_bool has_service_id = 0;
+
+			if (php_openssl_matches_san_list(peer, peer_name, &has_service_id)) {
 				return SUCCESS;
+			} else if (has_service_id) {
+				/* CN must be ignored if the certificate presents a service identity. */
+				php_error_docref(NULL, E_WARNING,
+					"Peer certificate subjectAltName did not match expected name `%s'",
+					peer_name);
+				return FAILURE;
 			} else if (php_openssl_matches_common_name(peer, peer_name)) {
 				return SUCCESS;
 			} else {
