@@ -358,8 +358,7 @@ static zend_bool php_x509_fingerprint_match(X509 *peer, zval *val)
 static zend_bool matches_wildcard_name(const char *subjectname, const char *certname) /* {{{ */
 {
 	char *wildcard = NULL;
-	ptrdiff_t prefix_len;
-	size_t suffix_len, subject_len;
+	size_t prefix_len, suffix_len, subject_len;
 
 	if (strcasecmp(subjectname, certname) == 0) {
 		return 1;
@@ -378,7 +377,7 @@ static zend_bool matches_wildcard_name(const char *subjectname, const char *cert
 
 	suffix_len = strlen(wildcard + 1);
 	subject_len = strlen(subjectname);
-	if (suffix_len <= subject_len) {
+	if (suffix_len + prefix_len <= subject_len) {
 		/* 2) suffix must match
 		 * 3) no . between prefix and suffix
 		 **/
