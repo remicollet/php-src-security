@@ -1111,7 +1111,7 @@ try_again:
 							char *t = phpurl->path;
 							char *p = strrchr(t, '/');
 							if (p) {
-								char *s = emalloc((p - t) + strlen(new_url->path) + 2);
+								char *s = safe_emalloc(1, p - t, strlen(new_url->path) + 2);
 								strncpy(s, t, (p - t) + 1);
 								s[(p - t) + 1] = 0;
 								strcat(s, new_url->path);
@@ -1409,18 +1409,20 @@ static int get_http_body(php_stream *stream, int close, char *headers,  char **r
 		done = FALSE;
 
 		while (!done) {
-			int buf_size = 0;
+			unsigned int buf_size = 0;
 
 			php_stream_gets(stream, headerbuf, sizeof(headerbuf));
 			if (sscanf(headerbuf, "%x", &buf_size) > 0 ) {
 				if (buf_size > 0) {
 					int len_size = 0;
 
-					if (http_buf_size + buf_size + 1 < 0) {
-						efree(http_buf);
+					if (buf_size >= (unsigned int) (INT_MAX - http_buf_size)) {
+						if (http_buf) {
+							efree(http_buf);
+						}
 						return FALSE;
 					}
-					http_buf = erealloc(http_buf, http_buf_size + buf_size + 1);
+					http_buf = safe_erealloc(http_buf, 1, http_buf_size, buf_size + 1);
 
 					while (len_size < buf_size) {
 						int len_read = php_stream_read(stream, http_buf + http_buf_size, buf_size - len_size);
@@ -1490,6 +1492,12 @@ static int get_http_body(php_stream *stream, int close, char *headers,  char **r
 	} else if (header_close) {
 		do {
 			int len_read;
+			if (UNEXPECTED(http_buf_size >= INT_MAX - 4096)) {
+				if (http_buf) {
+					efree(http_buf);
+				}
+				return FALSE;
+			}
 			http_buf = erealloc(http_buf, http_buf_size + 4096 + 1);
 			len_read = php_stream_read(stream, http_buf + http_buf_size, 4096);
 			if (len_read > 0) {
