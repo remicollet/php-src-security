@@ -55,7 +55,6 @@ Connection: close
 First:1
 Second:2
 
-
 POST / HTTP/1.0
 Host: 127.0.0.1:12342
 Connection: close
@@ -68,7 +67,6 @@ Host: 127.0.0.1:12342
 Connection: close
 First:1
 Second:2
-
 
 POST / HTTP/1.0
 Host: 127.0.0.1:12342
