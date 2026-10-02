@@ -336,7 +336,11 @@ class LogTool
         }
 
         $line = rtrim($line);
-        $pattern = sprintf('/^%s %s: %s$/', self::P_TIME, $type, $expectedMessage);
+        // Allow expected message to contain %s and %s for any string or number as in run-tests.php
+        $expectRe = str_replace('%s', '[^\r\n]+', $expectedMessage);
+        $expectRe = str_replace('%d', '\d+', $expectRe);
+
+        $pattern = sprintf('/^%s %s: %s$/', self::P_TIME, $type, $expectRe);
 
         if (preg_match($pattern, $line, $matches) === 0) {
             return $this->error(
