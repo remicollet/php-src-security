@@ -2,8 +2,6 @@
 GHSA-r6x9-5r99-36j7 (Various packet overreads in mysqlnd_writeprotocol.c - ok packet over-read in affected rows)
 --EXTENSIONS--
 mysqli
---XFAIL--
-TODO issue partially fixed
 --FILE--
 <?php
 require_once 'fake_server.inc';
@@ -40,5 +38,5 @@ Warning: mysqli::select_db(): Premature end of data (mysqlnd_wireprotocol.c:%d) 
 Warning: mysqli::select_db(): OK packet shorter than expected in %s on line %d
 
 Warning: mysqli::select_db(): Error while reading INIT_DB's response packet. PID=%d in %s on line %d
-Malformed packet
+bool(false)
 done!

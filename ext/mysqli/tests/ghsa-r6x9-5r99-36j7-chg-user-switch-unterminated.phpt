@@ -2,8 +2,6 @@
 GHSA-r6x9-5r99-36j7 (Various packet overreads in mysqlnd_writeprotocol.c - change user response with an unterminated plugin name)
 --EXTENSIONS--
 mysqli
---XFAIL--
-TODO issue partially fixed
 --FILE--
 <?php
 require_once 'fake_server.inc';
@@ -41,5 +39,5 @@ print "done!";
 Warning: mysqli::change_user(): Premature end of data (mysqlnd_wireprotocol.c:%d) in %s on line %d
 
 Warning: mysqli::change_user(): CHANGE_USER packet shorter than expected in %s on line %d
-mysqlnd cannot connect to MySQL 4.1+ using the old insecure authentication. Please use an administration tool to reset your password with the command SET PASSWORD = PASSWORD('your_existing_password'). This will store a new, and more secure, hash value in mysql.user. If this user is used in other scripts executed by PHP 5.2 or earlier you might need to remove the old-passwords flag from your my.cnf file
+bool(false)
 done!

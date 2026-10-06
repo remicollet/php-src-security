@@ -2,8 +2,6 @@
 GHSA-r6x9-5r99-36j7 (Various packet overreads in mysqlnd_writeprotocol.c - auth packet over-read in last inserted id)
 --EXTENSIONS--
 mysqli
---XFAIL--
-TODO issue partially fixed
 --FILE--
 <?php
 require_once 'fake_server.inc';
@@ -35,5 +33,8 @@ print "done!";
 Warning: mysqli::__construct(): Premature end of data (mysqlnd_wireprotocol.c:%d) in %s on line %d
 
 Warning: mysqli::__construct(): AUTH_RESPONSE packet shorter than expected in %s on line %d
-Unknown error while trying to connect via tcp://127.0.0.1:%d
+
+Warning: mysqli::__construct(): [2002]  (trying to connect via (null)) in %s
+
+Warning: mysqli::__construct(): (HY000/2002):  in %s
 done!

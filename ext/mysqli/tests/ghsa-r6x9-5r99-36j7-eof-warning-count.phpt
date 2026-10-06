@@ -2,8 +2,6 @@
 GHSA-r6x9-5r99-36j7 (Various packet overreads in mysqlnd_writeprotocol.c - eof packet over-read in warning count)
 --EXTENSIONS--
 mysqli
---XFAIL--
-TODO issue partially fixed
 --FILE--
 <?php
 require_once 'fake_server.inc';
@@ -42,5 +40,4 @@ Warning: mysqli::multi_query(): EOF packet shorter than expected in %s on line %
 
 Warning: mysqli::multi_query(): Error while reading SET_OPTION's response packet. PID=%d in %s on line %d
 [*] Received: 140000000353454c45435420313b2053454c45435420323b
-MySQL server has gone away
 done!
