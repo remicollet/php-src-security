@@ -3,7 +3,7 @@ GHSA-fpwc-w8rq-cr92: strip credentials from user headers on cross-origin redirec
 --INI--
 allow_url_fopen=1
 --SKIPIF--
-<?php require 'server.inc'; http_server_skipif(); ?>
+<?php require 'server.inc'; http_server_skipif("tcp://127.0.0.1:12342"); ?>
 --FILE--
 <?php
 require 'server.inc';
