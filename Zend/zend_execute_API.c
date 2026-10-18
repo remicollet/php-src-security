@@ -285,6 +285,8 @@ void shutdown_executor(void) /* {{{ */
 		zend_hash_discard(EG(function_table), EG(persistent_functions_count));
 		zend_hash_discard(EG(class_table), EG(persistent_classes_count));
 		zend_cleanup_internal_classes();
+		EG(objects_store).object_buckets = NULL;
+		EG(objects_store).top = 1;
 	} else {
 		zend_hash_graceful_reverse_destroy(&EG(symbol_table));
 
