@@ -392,6 +392,7 @@ ZEND_API char *zend_get_type_by_const(int type);
 
 #define array_init(arg)			_array_init((arg), 0 ZEND_FILE_LINE_CC)
 #define array_init_size(arg, size) _array_init((arg), (size) ZEND_FILE_LINE_CC)
+#define array_init_singleton(arg)	ZVAL_ARR((arg), zend_new_array_singleton())
 #define object_init(arg)		_object_init((arg) ZEND_FILE_LINE_CC)
 #define object_init_ex(arg, ce)	_object_init_ex((arg), (ce) ZEND_FILE_LINE_CC)
 #define object_and_properties_init(arg, ce, properties)	_object_and_properties_init((arg), (ce), (properties) ZEND_FILE_LINE_CC)

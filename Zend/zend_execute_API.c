@@ -299,6 +299,8 @@ void shutdown_executor(void) /* {{{ */
 		} ZEND_HASH_FOREACH_END_DEL();
 
 		zend_cleanup_internal_classes();
+		EG(objects_store).object_buckets = NULL;
+		EG(objects_store).top = 1;
 	} else {
 		zend_hash_graceful_reverse_destroy(&EG(symbol_table));
 
