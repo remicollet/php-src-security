@@ -1433,7 +1433,7 @@ function run_fake_server_in_background($test_function, $port = 33305)
     }
 
     $command = [PHP_BINARY, '-n', __FILE__, 'mysqli_fake_server', $test_function, $port];
-    $command = implode(' ', $command);
+    $command = 'exec ' . implode(' ', $command);
 
     $descriptorspec = array(
         0 => array("pipe", "r"),
