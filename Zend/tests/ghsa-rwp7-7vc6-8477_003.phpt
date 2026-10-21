@@ -19,4 +19,4 @@ try {
 
 ?>
 --EXPECT--
-Cannot assign string to property Foo::$prop of type int
+Typed property Foo::$prop must be int, string used

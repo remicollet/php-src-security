@@ -4,7 +4,7 @@ GHSA-rwp7-7vc6-8477: Use-after-free for ??= due to incorrect live-range calculat
 <?php
 
 class Foo {
-    public function foo() {
+    public function getThis() {
         return $this;
     }
 
@@ -16,7 +16,7 @@ class Foo {
 $foo = new Foo();
 
 try {
-    $foo->foo()->baz ??= 1;
+    $foo->getThis()->baz ??= 1;
 } catch (Exception $e) {
     echo $e->getMessage();
 }

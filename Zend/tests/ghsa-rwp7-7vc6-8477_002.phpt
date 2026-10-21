@@ -6,7 +6,7 @@ GHSA-rwp7-7vc6-8477: Use-after-free for ??= due to incorrect live-range calculat
 class Foo {
     public int $prop;
 
-    public function foo() {
+    public function getThis() {
         return $this;
     }
 }
@@ -14,11 +14,11 @@ class Foo {
 $foo = new Foo();
 
 try {
-    $foo->foo()->prop ??= 'foo';
+    $foo->getThis()->prop ??= 'foo';
 } catch (Error $e) {
     echo $e->getMessage();
 }
 
 ?>
 --EXPECT--
-Cannot assign string to property Foo::$prop of type int
+Typed property Foo::$prop must be int, string used
