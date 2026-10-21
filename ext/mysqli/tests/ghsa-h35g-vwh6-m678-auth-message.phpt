@@ -33,5 +33,5 @@ print "done!";
 [*] Received: %x
 [*] Sending - Malicious OK Auth Response [Extract heap through buffer over-read]: 0900000200000002000000fcff
 
-Warning: mysqli::__construct(): OK packet message length is past the packet size in %s on line %d
+Warning: mysqli::%s(): OK packet message length is past the packet size in %s on line %d
 %A
