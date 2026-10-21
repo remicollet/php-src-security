@@ -10,7 +10,7 @@ all
 --SKIPIF--
 <?php
 require __DIR__.'/../../../standard/tests/http/server.inc';
-http_server_skipif();
+http_server_skipif("tcp://127.0.0.1:12342");
 if (getenv("SKIP_SLOW_TESTS")) die('skip slow test');
 if (!getenv("SOAP_RUN_RESOURCE_HEAVY_TESTS")) die("skip SOAP resource-heavy test");
 if (PHP_INT_SIZE == 4) die('skip not for 32-bit systems due to memory constraints');
