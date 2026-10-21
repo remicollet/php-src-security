@@ -129,7 +129,7 @@ CONFIG;
                 $this->ca,
                 $this->caKey,
                 /* days */ 2,
-                $config,
+                $config
             );
             if (!$this->lastCert) {
                 throw new Exception('Failed to create certificate');
