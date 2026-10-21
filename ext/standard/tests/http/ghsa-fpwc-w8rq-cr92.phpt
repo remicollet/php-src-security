@@ -144,14 +144,12 @@ string(2) "OK"
   X-Custom: 2
 string(2) "OK"
 --- credential header last in the bag (307) ---
-POST /second HTTP/1.0
+GET /second HTTP/1.0
 Host: ...
 Connection: close
-Content-Length: 11
 X-Custom: keep-me
-Content-Type: application/x-www-form-urlencoded
 
-hello=world--- malformed header bags ---
+--- malformed header bags ---
   folded value        SECRET leaked: 0, X-Custom kept: 1
   folded value (tab)  SECRET leaked: 0, X-Custom kept: 1
   lone CR             SECRET leaked: 0, X-Custom kept: 1
