@@ -40,4 +40,8 @@ Warning: mysqli::multi_query(): EOF packet shorter than expected in %s on line %
 
 Warning: mysqli::multi_query(): Error while reading SET_OPTION's response packet. PID=%d in %s on line %d
 [*] Received: 140000000353454c45435420313b2053454c45435420323b
+
+Warning: mysqli::multi_query(): MySQL server has gone away in %s on line %d
+
+Warning: mysqli::multi_query(): Error reading result set's header in %s on line %d
 done!
