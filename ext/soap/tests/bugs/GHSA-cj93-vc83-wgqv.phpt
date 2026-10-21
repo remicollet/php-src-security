@@ -58,7 +58,7 @@ $wsdl = file_get_contents(__DIR__.'/../server030.wsdl');
 $headers =
     "HTTP/1.1 200 OK\r\n".
     "Content-Type: text/xml;charset=utf-8\r\n".
-    "Transfer-Encoding: \t  chunked\t \r\n".
+    "Transfer-Encoding: chunked\r\n".
     "Connection: close\r\n".
     "\r\n";
 
