@@ -5,7 +5,7 @@ soap
 --FILE--
 <?php
 
-function envelope(string $param): string
+function envelope($param)
 {
     return '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"'
         . ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'

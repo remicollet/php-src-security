@@ -6,7 +6,7 @@ soap
 <?php
 
 /* The body stays four deep whatever $n is: the decoder walks the href chain. */
-function chain(int $n): string
+function chain($n)
 {
     $links = '';
     for ($i = 1; $i <= $n; $i++) {

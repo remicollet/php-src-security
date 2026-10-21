@@ -6,7 +6,7 @@ GHSA-j3wh-g957-2m85 (tar entry injection via invalid entry size)
 phar.require_hash=0
 --FILE--
 <?php
-function tar_header(string $name, string $size, string $typeflag = '0'): string
+function tar_header($name, $size, $typeflag = '0')
 {
     $header = str_repeat("\0", 512);
     $header = substr_replace($header, $name, 0, strlen($name));
@@ -27,7 +27,7 @@ function tar_header(string $name, string $size, string $typeflag = '0'): string
     return substr_replace($header, sprintf("%06o\0 ", $checksum), 148, 8);
 }
 
-function tar_dump(string $fname): void
+function tar_dump($fname)
 {
     try {
         $phar = new PharData($fname);

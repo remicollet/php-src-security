@@ -7,7 +7,7 @@ soap.wsdl_cache_enabled=0
 --FILE--
 <?php
 
-function envelope(int $depth): string
+function envelope($depth)
 {
     return '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><test>'
         . str_repeat('<a>', $depth) . 'leaf' . str_repeat('</a>', $depth)

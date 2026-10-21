@@ -8,11 +8,11 @@ allow_url_fopen=1
 <?php
 require 'server.inc';
 
-function count_header(string $requests, string $name): int {
+function count_header($requests, $name) {
     return preg_match_all('/^' . preg_quote($name, '/') . ':/mi', $requests);
 }
 
-function report(string $label, string $requests): void {
+function report($label, $requests) {
     echo $label, "\n";
     foreach (['Authorization', 'Cookie', 'Proxy-Authorization', 'X-Custom'] as $name) {
         echo "  $name: ", count_header($requests, $name), "\n";
