@@ -29,6 +29,14 @@ Backported from 8.2.31
   . Fixed GHSA-hmxp-6pc4-f3vv (Broken Apache map value NULL check).
     (CVE-2026-7262) (ilutov)
 
+Backported from 8.1.32
+
+- Streams:
+  . Fixed GHSA-hgf5-96fm-v528 (Stream HTTP wrapper header check might omit
+    basic auth header). (CVE-2025-1736) (Jakub Zelenka)
+  . Fixed bug #79265 (Improper injection of Host header when using fopen for
+    http requests). (Miguel Xavier Penha Neto)
+
 Backported from 8.1.31
 
 - CLI:
