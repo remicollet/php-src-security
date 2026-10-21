@@ -18,7 +18,7 @@ class TestSoapClient extends SoapClient {
         $action,
         $version,
         $one_way = false
-    ): ?string {
+    ) {
         die($request);
     }
 }

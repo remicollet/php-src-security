@@ -495,7 +495,7 @@ class my_mysqli_fake_packet_generator
 
     public function server_stmt_execute_data_response(string $field_name)
     {
-        [$field, $pr1, $pr2, $pr3, $pr4] = $this->server_execute_data_response_start($field_name);
+        list($field, $pr1, $pr2, $pr3, $pr4) = $this->server_execute_data_response_start($field_name);
 
         $pr5 = new my_mysqli_fake_packet();
         $pr5->packet_length = $field['stmt_data_packet_length'];
@@ -511,7 +511,7 @@ class my_mysqli_fake_packet_generator
 
     public function server_query_execute_data_response(string $field_name)
     {
-        [$field, $pr1, $pr2, $pr3, $pr4] = $this->server_execute_data_response_start($field_name);
+        list($field, $pr1, $pr2, $pr3, $pr4) = $this->server_execute_data_response_start($field_name);
 
         $pr5 = new my_mysqli_fake_packet();
         $pr5->packet_length = $field['query_data_packet_length'];

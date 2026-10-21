@@ -134,7 +134,9 @@ function heavy_soap_server($wsdl, $headers)
     exit(0);
 }
 
-['pid' => $pid, 'uri' => $uri] = heavy_soap_server($wsdl, $headers);
+$server = heavy_soap_server($wsdl, $headers);
+$pid = $server['pid'];
+$uri = $server['uri'];
 
 $options = [
     'trace' => false,
