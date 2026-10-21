@@ -12,7 +12,7 @@ function count_header(string $requests, string $name): int {
     return preg_match_all('/^' . preg_quote($name, '/') . ':/mi', $requests);
 }
 
-function report(string $label, string $requests): void {
+function report(string $label, string $requests) {
     echo $label, "\n";
     foreach (['Authorization', 'Cookie', 'Proxy-Authorization', 'X-Custom'] as $name) {
         echo "  $name: ", count_header($requests, $name), "\n";

@@ -27,7 +27,7 @@ function tar_header(string $name, string $size, string $typeflag = '0'): string
     return substr_replace($header, sprintf("%06o\0 ", $checksum), 148, 8);
 }
 
-function tar_dump(string $fname): void
+function tar_dump(string $fname)
 {
     try {
         $phar = new PharData($fname);
