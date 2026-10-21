@@ -5,6 +5,7 @@ soap
 --SKIPIF--
 <?php
 if (PHP_INT_SIZE != 8) die("skip: 64-bit only");
+if (PHP_MAJOR_VERSION < 7) die("skip: strings longer than 2GB are not supported");
 ?>
 --INI--
 memory_limit=8G
