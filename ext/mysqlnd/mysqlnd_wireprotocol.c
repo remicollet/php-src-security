@@ -1578,7 +1578,7 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_MEMORY_POOL_CHUNK * row_buffer, zv
 									  zend_bool as_int_or_float, MYSQLND_STATS * stats)
 {
 	unsigned int i, j;
-	size_t rbs = row_buffer->size;
+	size_t rbs = row_buffer->app;
 	const zend_uchar * rbp = row_buffer->ptr;
 	const zend_uchar * p = rbp;
 	const zend_uchar * null_ptr;
