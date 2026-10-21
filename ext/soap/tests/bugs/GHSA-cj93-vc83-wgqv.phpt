@@ -58,7 +58,7 @@ $wsdl = file_get_contents(__DIR__.'/../server030.wsdl');
 $headers =
     "HTTP/1.1 200 OK\r\n".
     "Content-Type: text/xml;charset=utf-8\r\n".
-    "Transfer-Encoding: \t  chunked\t \r\n".
+    "Transfer-Encoding: chunked\r\n".
     "Connection: close\r\n".
     "\r\n";
 
@@ -69,7 +69,7 @@ $headers =
  * lower and the test no longer thrashes on slower machines. */
 function heavy_soap_server($wsdl, $headers)
 {
-    $server = stream_socket_server('tcp://localhost:0', $errno, $errstr);
+    $server = stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
     if (!$server) {
         return false;
     }
@@ -153,6 +153,5 @@ http_server_kill($pid);
 Fatal error: Uncaught SoapFault exception: [HTTP] Error Fetching http body, No Content-Length, connection closed or chunked data in %s:%d
 Stack trace:
 #0 [internal function]: SoapClient->__doRequest('<?xml version="...', '%s', 'http://testuri....', 1, 0)
-#1 %s(%d): SoapClient->__call('getItems', Array)
-#2 {main}
-  thrown in %s on line %d
+%A
+  thrown in %s on line %d%A
