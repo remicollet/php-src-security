@@ -387,8 +387,10 @@ int parse_packet_soap(zval *this_ptr, char *buffer, int buffer_size, sdlFunction
 			tmp = *(zval**)tmp;
 			Z_ADDREF_P(tmp);
 			zval_dtor(return_value);
-			*return_value = *tmp;
-			FREE_ZVAL(tmp);
+			/* tmp may still be referenced from SOAP_GLOBAL(ref_map), so it must not be freed here */
+			ZVAL_COPY_VALUE(return_value, tmp);
+			zval_copy_ctor(return_value);
+			zval_ptr_dtor(&tmp);
 		}
 	}
 
