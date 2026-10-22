@@ -328,6 +328,16 @@ void shutdown_executor(TSRMLS_D) /* {{{ */
 		}
 	} zend_end_try();
 
+	/* CVE-2026-109619: may be used by zend_error before init_executor */
+	EG(user_error_handler) = NULL;
+	EG(user_exception_handler) = NULL;
+	memset(&EG(user_error_handlers_error_reporting), 0, sizeof(EG(user_error_handlers_error_reporting)));
+	memset(&EG(user_error_handlers), 0, sizeof(EG(user_error_handlers)));
+	memset(&EG(user_exception_handlers), 0, sizeof(EG(user_exception_handlers)));
+	EG(error_handling) = EH_NORMAL;
+	EG(exception) = NULL;
+	EG(in_autoload) = NULL;
+
 	zend_shutdown_fpu(TSRMLS_C);
 
 	EG(active) = 0;
