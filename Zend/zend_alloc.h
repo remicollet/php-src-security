@@ -161,6 +161,8 @@ void zend_debug_alloc_output(char *format, ...);
 ZEND_API size_t zend_memory_usage(int real_usage TSRMLS_DC);
 ZEND_API size_t zend_memory_peak_usage(int real_usage TSRMLS_DC);
 
+ZEND_API void zend_mm_safe_error_ex(const char *format, ...) ZEND_ATTRIBUTE_FORMAT(printf, 1, 2);
+
 END_EXTERN_C()
 
 /* fast cache for zval's */
