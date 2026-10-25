@@ -25,5 +25,5 @@ try {
 }
 ?>
 --EXPECT--
-ldap_escape(): Argument #1 ($value) is too long
-ldap_escape(): Argument #1 ($value) is too long
+Argument #1 ($value) is too long
+Argument #1 ($value) is too long
