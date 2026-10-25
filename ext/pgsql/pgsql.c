@@ -4855,6 +4855,7 @@ PHP_PGSQL_API int php_pgsql_convert(PGconn *pg_link, const char *table_name, con
 									Z_STRVAL_P(val), Z_STRLEN_P(val), &escape_err);
 							if (escape_err) {
 								err = 1;
+								zend_string_release_ex(str, 0);
 							} else {
 								str = zend_string_truncate(str, ZSTR_LEN(str), 0);
 								ZVAL_NEW_STR(&new_val, str);
