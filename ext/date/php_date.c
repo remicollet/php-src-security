@@ -4733,7 +4733,11 @@ PHP_METHOD(DatePeriod, __construct)
 		}
 		dpobj->start_ce = date_ce_date;
 	} else {
-		DATE_CHECK_INITIALIZED(Z_PHPINTERVAL_P(interval)->initialized, Z_OBJCE_P(interval));
+		if (!Z_PHPINTERVAL_P(interval)->initialized) {
+			php_error_docref(NULL, E_WARNING, "The DateInterval object has not been correctly initialized by its constructor");
+			zend_restore_error_handling(&error_handling);
+			return;
+		}
 
 		/* init */
 		php_interval_obj *intobj = Z_PHPINTERVAL_P(interval);
