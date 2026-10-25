@@ -1,6 +1,12 @@
 PHP                                                                        NEWS
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
+Backported from 8.2.34
+
+- SOAP:
+  . Fixed GHSA-rgrp-mwpx-f6rm (Unbounded recursion in server-side
+    cleanup_xml_node()). (CVE-2026-91765) (Alexandre Daubois)
+
 Backported from 8.2.33
 
 - GD:
