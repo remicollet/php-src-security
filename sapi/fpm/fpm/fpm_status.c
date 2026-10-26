@@ -46,6 +46,22 @@ int fpm_status_init_child(struct fpm_worker_pool_s *wp) /* {{{ */
 }
 /* }}} */
 
+static char *fpm_status_escape(char *str, int encode, char **tmp TSRMLS_DC)
+{
+	size_t len;
+
+	*tmp = NULL;
+	if (str[0] == '\0') {
+		return NULL;
+	}
+	if (encode) {
+		*tmp = php_escape_html_entities_ex((unsigned char *) str, strlen(str), &len, 1,
+				ENT_DISALLOWED | ENT_HTML_DOC_XML1 | ENT_COMPAT, NULL, /* double_encode */ 1 TSRMLS_CC);
+		return *tmp;
+	}
+	return str;
+}
+
 int fpm_status_handle_request(TSRMLS_D) /* {{{ */
 {
 	struct fpm_scoreboard_s scoreboard, *scoreboard_p;
@@ -384,8 +400,10 @@ int fpm_status_handle_request(TSRMLS_D) /* {{{ */
 		/* no need to test the var 'full' */
 		if (full_syntax) {
 			int i, first;
-			size_t len, len_uri;
-			char *query_string, *request_uri_string;
+			char *tmp_request_method_string, *tmp_request_uri_string, *tmp_query_string;
+			char *tmp_auth_user_string, *tmp_script_filename_string;
+			char *request_method_string, *request_uri_string, *query_string;
+			char *auth_user_string, *script_filename_string;
 			struct timeval duration, now;
 #ifdef HAVE_FPM_LQ
 			float cpu;
@@ -412,24 +430,11 @@ int fpm_status_handle_request(TSRMLS_D) /* {{{ */
 					}
 				}
 
-				request_uri_string = NULL;
-				len_uri = 0;
-				if (proc.request_uri[0] != '\0') {
-					if (!encode) {
-						request_uri_string = proc.request_uri;
-					} else {
-						request_uri_string = php_escape_html_entities_ex((unsigned char *)proc.request_uri, strlen(proc.request_uri), &len_uri, 1, ENT_DISALLOWED | ENT_HTML_DOC_XML1 | ENT_COMPAT, NULL, 1 TSRMLS_CC);
-					}
-				}
-				query_string = NULL;
-				len = 0;
-				if (proc.query_string[0] != '\0') {
-					if (!encode) {
-						query_string = proc.query_string;
-					} else {
-						query_string = php_escape_html_entities_ex((unsigned char *)proc.query_string, strlen(proc.query_string), &len, 1, ENT_DISALLOWED | ENT_HTML_DOC_XML1 | ENT_COMPAT, NULL, 1 TSRMLS_CC);
-					}
-				}
+				request_method_string = fpm_status_escape(proc.request_method, encode, &tmp_request_method_string TSRMLS_CC);
+				request_uri_string = fpm_status_escape(proc.request_uri, encode, &tmp_request_uri_string TSRMLS_CC);
+				query_string = fpm_status_escape(proc.query_string, encode, &tmp_query_string TSRMLS_CC);
+				auth_user_string = fpm_status_escape(proc.auth_user, encode, &tmp_auth_user_string TSRMLS_CC);
+				script_filename_string = fpm_status_escape(proc.script_filename, encode, &tmp_script_filename_string TSRMLS_CC);
 
 #ifdef HAVE_FPM_LQ
 				/* prevent NaN */
@@ -453,13 +458,13 @@ int fpm_status_handle_request(TSRMLS_D) /* {{{ */
 					now_epoch - proc.start_epoch,
 					proc.requests,
 					duration.tv_sec * 1000000UL + duration.tv_usec,
-					proc.request_method[0] != '\0' ? proc.request_method : "-",
-					request_uri_string ? request_uri_string: "-",
+					request_method_string ? request_method_string : "-",
+					request_uri_string ? request_uri_string : "-",
 					query_string ? "?" : "",
 					query_string ? query_string : "",
 					proc.content_length,
-					proc.auth_user[0] != '\0' ? proc.auth_user : "-",
-					proc.script_filename[0] != '\0' ? proc.script_filename : "-",
+					auth_user_string ? auth_user_string : "-",
+					script_filename_string ? script_filename_string : "-",
 #ifdef HAVE_FPM_LQ
 					proc.request_stage == FPM_REQUEST_ACCEPTING ? cpu : 0.,
 #endif
@@ -467,11 +472,20 @@ int fpm_status_handle_request(TSRMLS_D) /* {{{ */
 				PUTS(buffer);
 				efree(buffer);
 
-				if (len > 0 && query_string) {
-					efree(query_string);
+				if (tmp_request_method_string) {
+					efree(tmp_request_method_string);
 				}
-				if (len_uri > 0 && request_uri_string) {
-					efree(request_uri_string);
+				if (tmp_request_uri_string) {
+					efree(tmp_request_uri_string);
+				}
+				if (tmp_query_string) {
+					efree(tmp_query_string);
+				}
+				if (tmp_auth_user_string) {
+					efree(tmp_auth_user_string);
+				}
+				if (tmp_script_filename_string) {
+					efree(tmp_script_filename_string);
 				}
 			}
 
