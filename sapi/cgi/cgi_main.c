@@ -1269,9 +1269,9 @@ static void init_request_info(fcgi_request *request TSRMLS_DC)
 						 */
 						int slen = len - strlen(pt);
 						int pilen = env_path_info ? strlen(env_path_info) : 0;
-						char *path_info = env_path_info ? env_path_info + pilen - slen : NULL;
+						char *path_info = (env_path_info && pilen > slen) ? env_path_info + pilen - slen : NULL;
 
-						if (orig_path_info != path_info) {
+						if (path_info && orig_path_info != path_info) {
 							if (orig_path_info) {
 								char old;
 
