@@ -46,6 +46,20 @@ int fpm_status_init_child(struct fpm_worker_pool_s *wp) /* {{{ */
 }
 /* }}} */
 
+static char *fpm_status_escape(char *str, int encode, zend_string **tmp)
+{
+	*tmp = NULL;
+	if (str[0] == '\0') {
+		return NULL;
+	}
+	if (encode) {
+		*tmp = php_escape_html_entities_ex((unsigned char *) str, strlen(str), 1,
+				ENT_DISALLOWED | ENT_HTML_DOC_XML1 | ENT_COMPAT, NULL, /* double_encode */ 1);
+		return ZSTR_VAL(*tmp);
+	}
+	return str;
+}
+
 int fpm_status_handle_request(void) /* {{{ */
 {
 	struct fpm_scoreboard_s scoreboard, *scoreboard_p;
@@ -388,8 +402,10 @@ int fpm_status_handle_request(void) /* {{{ */
 		if (full_syntax) {
 			unsigned int i;
 			int first;
-			zend_string *tmp_query_string, *tmp_request_uri_string;
-			char *query_string, *request_uri_string;
+			zend_string *tmp_request_method_string, *tmp_request_uri_string, *tmp_query_string;
+			zend_string *tmp_auth_user_string, *tmp_script_filename_string;
+			char *request_method_string, *request_uri_string, *query_string;
+			char *auth_user_string, *script_filename_string;
 			struct timeval duration, now;
 #ifdef HAVE_FPM_LQ
 			float cpu;
@@ -416,33 +432,11 @@ int fpm_status_handle_request(void) /* {{{ */
 					}
 				}
 
-				request_uri_string = NULL;
-				tmp_request_uri_string = NULL;
-				if (proc.request_uri[0] != '\0') {
-					if (encode) {
-						tmp_request_uri_string = php_escape_html_entities_ex(
-								(unsigned char*)proc.request_uri,
-								strlen(proc.request_uri), 1, ENT_DISALLOWED | ENT_HTML_DOC_XML1 | ENT_COMPAT,
-								NULL, /* double_encode */ 1);
-						request_uri_string = ZSTR_VAL(tmp_request_uri_string);
-					} else {
-						request_uri_string = proc.request_uri;
-					}
-				}
-
-				query_string = NULL;
-				tmp_query_string = NULL;
-				if (proc.query_string[0] != '\0') {
-					if (!encode) {
-						query_string = proc.query_string;
-					} else {
-						tmp_query_string = php_escape_html_entities_ex(
-								(unsigned char*)proc.query_string,
-								strlen(proc.query_string), 1, ENT_DISALLOWED | ENT_HTML_DOC_XML1 | ENT_COMPAT,
-								NULL, /* double_encode */ 1);
-						query_string = ZSTR_VAL(tmp_query_string);
-					}
-				}
+				request_method_string = fpm_status_escape(proc.request_method, encode, &tmp_request_method_string);
+				request_uri_string = fpm_status_escape(proc.request_uri, encode, &tmp_request_uri_string);
+				query_string = fpm_status_escape(proc.query_string, encode, &tmp_query_string);
+				auth_user_string = fpm_status_escape(proc.auth_user, encode, &tmp_auth_user_string);
+				script_filename_string = fpm_status_escape(proc.script_filename, encode, &tmp_script_filename_string);
 
 #ifdef HAVE_FPM_LQ
 				/* prevent NaN */
@@ -466,13 +460,13 @@ int fpm_status_handle_request(void) /* {{{ */
 					now_epoch - proc.start_epoch,
 					proc.requests,
 					duration.tv_sec * 1000000UL + duration.tv_usec,
-					proc.request_method[0] != '\0' ? proc.request_method : "-",
+					request_method_string ? request_method_string : "-",
 					request_uri_string ? request_uri_string : "-",
 					query_string ? "?" : "",
 					query_string ? query_string : "",
 					proc.content_length,
-					proc.auth_user[0] != '\0' ? proc.auth_user : "-",
-					proc.script_filename[0] != '\0' ? proc.script_filename : "-",
+					auth_user_string ? auth_user_string : "-",
+					script_filename_string ? script_filename_string : "-",
 #ifdef HAVE_FPM_LQ
 					proc.request_stage == FPM_REQUEST_ACCEPTING ? cpu : 0.,
 #endif
@@ -480,11 +474,20 @@ int fpm_status_handle_request(void) /* {{{ */
 				PUTS(buffer);
 				efree(buffer);
 
+				if (tmp_request_method_string) {
+					zend_string_free(tmp_request_method_string);
+				}
 				if (tmp_request_uri_string) {
 					zend_string_free(tmp_request_uri_string);
 				}
 				if (tmp_query_string) {
 					zend_string_free(tmp_query_string);
+				}
+				if (tmp_auth_user_string) {
+					zend_string_free(tmp_auth_user_string);
+				}
+				if (tmp_script_filename_string) {
+					zend_string_free(tmp_script_filename_string);
 				}
 			}
 
