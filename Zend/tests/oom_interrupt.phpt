@@ -1,5 +1,10 @@
 --TEST--
 OOM: zend_interrupt_function
+--SKIPIF--
+<?php
+if (!extension_loaded('posix')) die('skip posix extension not loaded');
+if (!extension_loaded('pcntl')) die('skip pcntl extension not loaded');
+?>
 --EXTENSIONS--
 pcntl
 posix
