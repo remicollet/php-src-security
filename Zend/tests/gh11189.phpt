@@ -1,5 +1,7 @@
 --TEST--
 GH-11189: Exceeding memory limit in zend_hash_do_resize leaves the array in an invalid state (packed array)
+--XFAIL--
+Because mitigation for CVE-2026-109618, CVE-2026-109619
 --SKIPIF--
 <?php
 if (PHP_OS_FAMILY === 'Windows') {

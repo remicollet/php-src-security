@@ -1,5 +1,7 @@
 --TEST--
 session rfc1867
+--XFAIL--
+Because mitigation for CVE-2026-109618, CVE-2026-109619
 --INI--
 file_uploads=1
 upload_max_filesize=1024

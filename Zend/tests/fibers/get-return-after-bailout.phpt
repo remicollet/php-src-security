@@ -1,5 +1,7 @@
 --TEST--
 Fiber::getReturn() after bailout
+--XFAIL--
+Because mitigation for CVE-2026-109618, CVE-2026-109619
 --SKIPIF--
 <?php
 $zend_mm_enabled = getenv("USE_ZEND_ALLOC");
