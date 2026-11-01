@@ -261,6 +261,8 @@ CWD_API int php_sys_stat_ex(const char *path, zend_stat_t *buf, int lstat) /* {{
 		return -1;
 	}
 
+	PHP_WIN32_IOUTIL_CHECK_PATH_W(pathw, -1, 1)
+
 	if (!GetFileAttributesExW(pathw, GetFileExInfoStandard, &data)) {
 		int ret;
 #if ZEND_ENABLE_ZVAL_LONG64
@@ -1277,6 +1279,19 @@ CWD_API int virtual_file_ex(cwd_state *state, const char *path, verify_path_func
 
 #if VIRTUAL_CWD_DEBUG
 	fprintf(stderr,"cwd = %s path = %s\n", state->cwd, path);
+#endif
+
+#ifdef ZEND_WIN32
+	switch (php_win32_ioutil_path_kind_a(path, path_length)) {
+		case PHP_WIN32_IOUTIL_PATH_RESERVED:
+			SET_ERRNO_FROM_WIN32_CODE(ERROR_INVALID_NAME);
+			return 1;
+		case PHP_WIN32_IOUTIL_PATH_DEVICE:
+			memcpy(resolved_path, path, path_length + 1);
+			goto verify;
+		default:
+			break;
+	}
 #endif
 
 	/* cwd_length can be 0 when getcwd() fails.
