@@ -1546,10 +1546,16 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_MEMORY_POOL_CHUNK * row_buffer, zv
 
 	end_field = (start_field = fields) + field_count;
 
+	/* The status byte and the complete null bitmap must fit the row. */
+	size_t null_bytes = field_count / 8 + 1 + (field_count % 8 > 6);
+	if (rbs == 0 || null_bytes > rbs - 1) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Malformed server packet. Incomplete null bitmap");
+		DBG_RETURN(FAIL);
+	}
 	/* skip the first byte, not EODATA_MARKER -> 0x0, status */
 	p++;
 	null_ptr= p;
-	p += (field_count + 9)/8;	/* skip null bits */
+	p += null_bytes;	/* skip null bits */
 	bit	= 4;					/* first 2 bits are reserved */
 
 	for (i = 0, current_field = start_field; current_field < end_field; current_field++, i++) {

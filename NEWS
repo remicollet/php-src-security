@@ -11,6 +11,10 @@ Backported from 8.2.34
   . Fixed GHSA-62xp-839h-2637 (IPv6 ACL bypass in FastCGI listen.allowed_clients
     due to partial address comparison). (CVE-2026-91768) (Alexandre Daubois)
 
+- MySQLnd:
+  . Hardened binary temporal field decoding against short lengths
+    (GHSA-r6x9-5r99-36j7, CVE-2025-1218).
+
 - OpenSSL:
   . Fixed GHSA-vvx9-73fr-5jjx (TLS hostname verification falls back to CN after
     SAN mismatch). (CVE-2026-91769) (Jakub Zelenka)

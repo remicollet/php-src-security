@@ -83,6 +83,17 @@ static inline zend_bool ps_fetch_is_packet_over_read_with_static_length(const un
 	return 0;
 }
 
+static inline zend_bool ps_fetch_is_length_too_short(zend_uchar ** row, unsigned long length,
+		unsigned int min_length TSRMLS_DC)
+{
+	if (UNEXPECTED(length < min_length)) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Malformed server packet. Field length is too short for the field type");
+		*row = NULL;
+		return 1;
+	}
+	return 0;
+}
+
 
 /* {{{ ps_fetch_from_1_to_8_bytes */
 void
@@ -269,6 +280,9 @@ ps_fetch_time(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_le
 		if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
 			return;
 		}
+		if (UNEXPECTED(ps_fetch_is_length_too_short(row, length, 8 TSRMLS_CC))) {
+			return;
+		}
 
 		zend_uchar * to= *row;
 
@@ -279,7 +293,7 @@ ps_fetch_time(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_le
 		t.hour			= (unsigned int) to[5];
 		t.minute		= (unsigned int) to[6];
 		t.second		= (unsigned int) to[7];
-		t.second_part	= (length > 8) ? (unsigned long) sint4korr(to+8) : 0;
+		t.second_part	= (length >= 12) ? (unsigned long) sint4korr(to+8) : 0;
 		t.year			= t.month= 0;
 		if (t.day) {
 			/* Convert days to hours at once */
@@ -315,6 +329,9 @@ ps_fetch_date(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_le
 
 	if ((length = php_mysqlnd_net_field_length(row))) {
 		if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
+			return;
+		}
+		if (UNEXPECTED(ps_fetch_is_length_too_short(row, length, 4 TSRMLS_CC))) {
 			return;
 		}
 
@@ -359,6 +376,9 @@ ps_fetch_datetime(zval * zv, const MYSQLND_FIELD * const field, unsigned int pac
 		if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
 			return;
 		}
+		if (UNEXPECTED(ps_fetch_is_length_too_short(row, length, 4 TSRMLS_CC))) {
+			return;
+		}
 
 		zend_uchar * to = *row;
 
@@ -369,14 +389,14 @@ ps_fetch_datetime(zval * zv, const MYSQLND_FIELD * const field, unsigned int pac
 		t.month = (unsigned int) to[2];
 		t.day	 = (unsigned int) to[3];
 
-		if (length > 4) {
+		if (length >= 7) {
 			t.hour	 = (unsigned int) to[4];
 			t.minute = (unsigned int) to[5];
 			t.second = (unsigned int) to[6];
 		} else {
 			t.hour = t.minute = t.second= 0;
 		}
-		t.second_part = (length > 7) ? (unsigned long) sint4korr(to+7) : 0;
+		t.second_part = (length >= 11) ? (unsigned long) sint4korr(to+7) : 0;
 
 		(*row)+= length;
 	} else {
