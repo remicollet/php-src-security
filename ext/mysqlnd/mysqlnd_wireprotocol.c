@@ -943,7 +943,10 @@ php_mysqlnd_ok_read(MYSQLND_CONN_DATA * conn, void * _packet)
 		if (UNEXPECTED(net_len == MYSQLND_INVALID_NET_FIELD_LENGTH)) {
 			BAIL_PREMATURE_END;
 		}
-		packet->message_len = MIN(net_len, buf_len - (p - begin));
+		if (net_len > packet->header.size - (size_t) (p - buf)) {
+			BAIL_PREMATURE_END;
+		}
+		packet->message_len = net_len;
 		packet->message = mnd_pestrndup((char *)p, packet->message_len, FALSE);
 	} else {
 		packet->message = NULL;
@@ -1558,10 +1561,16 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_ROW_BUFFER * row_buffer, zval * fi
 
 	end_field = (start_field = fields) + field_count;
 
+	/* Reject a truncated null bitmap before reading any of its bits. */
+	size_t null_bytes = field_count / 8 + 1 + (field_count % 8 > 6);
+	if (rbs == 0 || null_bytes > rbs - 1) {
+		php_error_docref(NULL, E_WARNING, "Malformed server packet. Incomplete null bitmap");
+		DBG_RETURN(FAIL);
+	}
 	/* skip the first byte, not EODATA_MARKER -> 0x0, status */
 	p++;
 	null_ptr= p;
-	p += (field_count + 9)/8;	/* skip null bits */
+	p += null_bytes;	/* skip null bits */
 	bit	= 4;					/* first 2 bits are reserved */
 
 	for (i = 0, current_field = start_field; current_field < end_field; current_field++, i++) {
@@ -1582,6 +1591,7 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_ROW_BUFFER * row_buffer, zval * fi
 			if (rbs <= row_position) {
 				for (j = 0, current_field = start_field; j < i; current_field++, j++) {
 					zval_ptr_dtor(current_field);
+					ZVAL_UNDEF(current_field);
 				}
 				php_error_docref(NULL, E_WARNING, "Malformed server packet. No packet space left for the field");
 				DBG_RETURN(FAIL);
@@ -1590,6 +1600,7 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_ROW_BUFFER * row_buffer, zval * fi
 			if (p == NULL) {
 				for (j = 0, current_field = start_field; j < i; current_field++, j++) {
 					zval_ptr_dtor(current_field);
+					ZVAL_UNDEF(current_field);
 				}
 				DBG_RETURN(FAIL);
 			}
@@ -1674,6 +1685,7 @@ php_mysqlnd_rowp_read_text_protocol_aux(MYSQLND_ROW_BUFFER * row_buffer, zval * 
 			php_error_docref(NULL, E_WARNING, "Malformed server packet. Field length pointing after end of packet");
 			for (j = 0, current_field = start_field; j < i; current_field++, j++) {
 				zval_ptr_dtor(current_field);
+					ZVAL_UNDEF(current_field);
 			}
 			DBG_RETURN(FAIL);
 		} else {
