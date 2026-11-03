@@ -12,7 +12,7 @@ Backported from 8.2.34
     due to partial address comparison). (CVE-2026-91768) (Alexandre Daubois)
 
 - MySQLnd:
-  . Hardened binary temporal field decoding against short lengths
+  . Hardened binary temporal fields and OK-packet messages against invalid lengths
     (GHSA-r6x9-5r99-36j7, CVE-2025-1218).
 
 - OpenSSL:

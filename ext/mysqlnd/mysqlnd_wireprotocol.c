@@ -878,8 +878,18 @@ php_mysqlnd_ok_read(void * _packet, MYSQLND_CONN_DATA * conn TSRMLS_DC)
 	BAIL_IF_NO_MORE_DATA;
 
 	/* There is a message */
+	if (packet->header.size > (size_t) (p - buf)) {
+		size_t available = packet->header.size - (size_t) (p - buf);
+		size_t length_bytes = *p < 252 ? 1 : (*p == 252 ? 3 : (*p == 253 ? 4 : 9));
+		if (length_bytes > available) {
+			goto premature_end;
+		}
+	}
 	if (packet->header.size > (size_t) (p - buf) && (i = php_mysqlnd_net_field_length(&p))) {
-		packet->message_len = MIN(i, buf_len - (p - begin));
+		if (i > packet->header.size - (size_t) (p - buf)) {
+			goto premature_end;
+		}
+		packet->message_len = i;
 		packet->message = mnd_pestrndup((char *)p, packet->message_len, FALSE);
 	} else {
 		packet->message = NULL;

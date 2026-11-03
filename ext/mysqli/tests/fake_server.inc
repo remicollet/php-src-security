@@ -711,6 +711,21 @@ function my_mysqli_test_stmt_response_row_over_read_string(my_mysqli_fake_server
     $conn->read(65536);
 }
 
+function my_mysqli_test_ok_message_length_past_packet(my_mysqli_fake_server_conn $conn)
+{
+    $p = $conn->packet_generator->server_ok();
+    $p->packet_number = '01';
+    $p->packet_length = '080000';
+    $p->message_len = '10';
+
+    $conn->send_server_greetings();
+    $conn->read();
+    $conn->send_server_ok();
+    $conn->read();
+    $conn->send($p->to_bytes(), 'OK message length past packet');
+    $conn->read();
+}
+
 function my_mysqli_test_stmt_response_row_short_length(my_mysqli_fake_server_conn $conn, $field_name)
 {
     $rh = $conn->packet_generator->server_stmt_execute_data_response($field_name);
