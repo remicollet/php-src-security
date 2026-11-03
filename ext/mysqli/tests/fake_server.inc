@@ -1308,6 +1308,21 @@ function my_mysqli_test_ok_last_insert_id_over_read(my_mysqli_fake_server_conn $
     $conn->read();
 }
 
+function my_mysqli_test_ok_message_length_past_packet(my_mysqli_fake_server_conn $conn)
+{
+    $p = $conn->packet_generator->server_ok();
+    $p->packet_number = '01';
+    $p->packet_length = '080000';
+    $p->message_len = '10';
+
+    $conn->send_server_greetings();
+    $conn->read();
+    $conn->send_server_ok();
+    $conn->read();
+    $conn->send($p->to_bytes(), 'OK message length past packet');
+    $conn->read();
+}
+
 function my_mysqli_test_ok_message_len_over_read(my_mysqli_fake_server_conn $conn): void
 {
     $p = $conn->packet_generator->server_ok("01");

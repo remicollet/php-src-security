@@ -950,7 +950,10 @@ php_mysqlnd_ok_read(MYSQLND_CONN_DATA * conn, void * _packet)
 		if (UNEXPECTED(net_len == MYSQLND_INVALID_NET_FIELD_LENGTH)) {
 			BAIL_PREMATURE_END;
 		}
-		packet->message_len = MIN(net_len, buf_len - (p - begin));
+		if (net_len > packet->header.size - (size_t) (p - buf)) {
+			BAIL_PREMATURE_END;
+		}
+		packet->message_len = net_len;
 		packet->message = mnd_pestrndup((char *)p, packet->message_len, FALSE);
 	} else {
 		packet->message = NULL;
