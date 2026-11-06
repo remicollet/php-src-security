@@ -432,7 +432,7 @@ static php_stream *php_stream_url_wrap_http_ex(php_stream_wrapper *wrapper,
 			request_fulluri = zend_is_true(tmpzval);
 		}
 
-		use_ssl = resource->scheme && (strlen(resource->scheme) > 4) && resource->scheme[4] == 's';
+		use_ssl = resource->scheme && !strcasecmp(resource->scheme, "https");
 		/* choose default ports */
 		if (use_ssl && resource->port == 0)
 			resource->port = 443;
