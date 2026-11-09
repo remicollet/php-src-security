@@ -820,7 +820,7 @@ PHP_INI_BEGIN()
 
 	/* Upload progress */
 	STD_PHP_INI_BOOLEAN("session.upload_progress.enabled",
-	                                                "1",     ZEND_INI_PERDIR, OnUpdateBool,        rfc1867_enabled, php_ps_globals, ps_globals)
+	                                                "0",     ZEND_INI_PERDIR, OnUpdateBool,        rfc1867_enabled, php_ps_globals, ps_globals)
 	STD_PHP_INI_BOOLEAN("session.upload_progress.cleanup",
 	                                                "1",     ZEND_INI_PERDIR, OnUpdateBool,        rfc1867_cleanup, php_ps_globals, ps_globals)
 	STD_PHP_INI_ENTRY("session.upload_progress.prefix",
@@ -2438,6 +2438,7 @@ static PHP_GINIT_FUNCTION(ps) /* {{{ */
 	ps_globals->mod = NULL;
 	ps_globals->serializer = NULL;
 	ps_globals->mod_data = NULL;
+	ps_globals->rfc1867_enabled = 0;
 	ps_globals->session_status = php_session_none;
 	ps_globals->default_mod = NULL;
 	ps_globals->mod_user_implemented = 0;
