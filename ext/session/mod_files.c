@@ -414,10 +414,9 @@ PS_WRITE_FUNC(files)
 		return FAILURE;
 	}
 
-	/* Truncate file if the amount of new data is smaller than the existing data set. */
-
-	if (vallen < (int)data->st_size) {
-		php_ignore_value(ftruncate(data->fd, 0));
+	if (ftruncate(data->fd, 0) != 0) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "ftruncate() failed: %s (%d)", strerror(errno), errno);
+		return FAILURE;
 	}
 
 #if defined(HAVE_PWRITE)
