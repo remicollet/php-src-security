@@ -47,6 +47,7 @@ ZEND_BEGIN_MODULE_GLOBALS(zend_test)
 	int observer_show_opcode;
 	int observer_nesting_depth;
 	int replace_zend_execute_ex;
+	bool warn_on_startup;
 	HashTable global_weakmap;
 ZEND_END_MODULE_GLOBALS(zend_test)
 
@@ -414,6 +415,17 @@ static ZEND_INI_MH(zend_test_observer_OnUpdateCommaList)
 	return SUCCESS;
 }
 
+static PHP_INI_MH(OnUpdateZendTestWarnOnStartup)
+{
+	zend_result result = OnUpdateBool(entry, new_value, mh_arg1, mh_arg2, mh_arg3, stage);
+	if (result == SUCCESS) {
+		if (*(bool *)ZEND_INI_GET_ADDR()) {
+			zend_error(E_WARNING, "Test startup warning from zend_test");
+		}
+	}
+	return result;
+}
+
 PHP_INI_BEGIN()
 	STD_PHP_INI_BOOLEAN("zend_test.observer.enabled", "0", PHP_INI_SYSTEM, OnUpdateBool, observer_enabled, zend_zend_test_globals, zend_test_globals)
 	STD_PHP_INI_BOOLEAN("zend_test.observer.show_output", "1", PHP_INI_SYSTEM, OnUpdateBool, observer_show_output, zend_zend_test_globals, zend_test_globals)
@@ -426,6 +438,7 @@ PHP_INI_BEGIN()
 	STD_PHP_INI_BOOLEAN("zend_test.observer.show_init_backtrace", "0", PHP_INI_SYSTEM, OnUpdateBool, observer_show_init_backtrace, zend_zend_test_globals, zend_test_globals)
 	STD_PHP_INI_BOOLEAN("zend_test.observer.show_opcode", "0", PHP_INI_SYSTEM, OnUpdateBool, observer_show_opcode, zend_zend_test_globals, zend_test_globals)
 	STD_PHP_INI_BOOLEAN("zend_test.replace_zend_execute_ex", "0", PHP_INI_SYSTEM, OnUpdateBool, replace_zend_execute_ex, zend_zend_test_globals, zend_test_globals)
+	STD_PHP_INI_BOOLEAN("zend_test.warn_on_startup", "0", PHP_INI_SYSTEM, OnUpdateZendTestWarnOnStartup, warn_on_startup, zend_zend_test_globals, zend_test_globals)
 PHP_INI_END()
 
 static zend_observer_fcall_handlers observer_fcall_init(zend_execute_data *execute_data);
