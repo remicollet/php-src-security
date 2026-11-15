@@ -456,6 +456,17 @@ static PHP_INI_MH(OnUpdateZendTestObserveOplineInZendMM)
 	return OnUpdateBool(entry, new_value, mh_arg1, mh_arg2, mh_arg3, stage);
 }
 
+static PHP_INI_MH(OnUpdateZendTestWarnOnStartup)
+{
+	zend_result result = OnUpdateBool(entry, new_value, mh_arg1, mh_arg2, mh_arg3, stage);
+	if (result == SUCCESS) {
+		if (*(bool *)ZEND_INI_GET_ADDR()) {
+			zend_error(E_WARNING, "Test startup warning from zend_test");
+		}
+	}
+	return result;
+}
+
 static ZEND_FUNCTION(zend_test_is_pcre_bundled)
 {
 	ZEND_PARSE_PARAMETERS_NONE();
@@ -651,6 +662,7 @@ PHP_INI_BEGIN()
 	STD_PHP_INI_BOOLEAN("zend_test.replace_zend_execute_ex", "0", PHP_INI_SYSTEM, OnUpdateBool, replace_zend_execute_ex, zend_zend_test_globals, zend_test_globals)
 	STD_PHP_INI_BOOLEAN("zend_test.register_passes", "0", PHP_INI_SYSTEM, OnUpdateBool, register_passes, zend_zend_test_globals, zend_test_globals)
 	STD_PHP_INI_BOOLEAN("zend_test.observe_opline_in_zendmm", "0", PHP_INI_ALL, OnUpdateZendTestObserveOplineInZendMM, observe_opline_in_zendmm, zend_zend_test_globals, zend_test_globals)
+	STD_PHP_INI_BOOLEAN("zend_test.warn_on_startup", "0", PHP_INI_SYSTEM, OnUpdateZendTestWarnOnStartup, warn_on_startup, zend_zend_test_globals, zend_test_globals)
 PHP_INI_END()
 
 void (*old_zend_execute_ex)(zend_execute_data *execute_data);

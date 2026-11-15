@@ -52,6 +52,7 @@ ZEND_BEGIN_MODULE_GLOBALS(zend_test)
 	HashTable global_weakmap;
 	int replace_zend_execute_ex;
 	int register_passes;
+	bool warn_on_startup;
 	int observe_opline_in_zendmm;
 	zend_mm_heap* zend_orig_heap;
 	zend_mm_heap* zend_test_heap;
