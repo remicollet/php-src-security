@@ -210,6 +210,19 @@ static zend_function_entry zend_test_trait_methods[] = {
     ZEND_FE_END
 };
 
+static PHP_INI_MH(OnUpdateZendTestWarnOnStartup)
+{
+	/* zend_ini_parse_bool() is not available here */
+	if (atoi(ZSTR_VAL(new_value)) != 0) {
+		zend_error(E_WARNING, "Test startup warning from zend_test");
+	}
+	return SUCCESS;
+}
+
+PHP_INI_BEGIN()
+	PHP_INI_ENTRY("zend_test.warn_on_startup", "0", PHP_INI_SYSTEM, OnUpdateZendTestWarnOnStartup)
+PHP_INI_END()
+
 PHP_MINIT_FUNCTION(zend_test)
 {
 	zend_class_entry class_entry;
@@ -233,11 +246,16 @@ PHP_MINIT_FUNCTION(zend_test)
 	zend_declare_property_null(zend_test_trait, "testProp", sizeof("testProp")-1, ZEND_ACC_PUBLIC);
 
 	zend_register_class_alias("_ZendTestClassAlias", zend_test_class);
+
+	REGISTER_INI_ENTRIES();
+
 	return SUCCESS;
 }
 
 PHP_MSHUTDOWN_FUNCTION(zend_test)
 {
+	UNREGISTER_INI_ENTRIES();
+
 	return SUCCESS;
 }
 
