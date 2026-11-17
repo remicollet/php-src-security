@@ -1,7 +1,7 @@
 --TEST--
 GHSA-q23r-hr55-xmpg: Out-of-bounds read on empty SOAP-ENC:arraySize
---EXTENSIONS--
-soap
+--SKIPIF--
+<?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
 

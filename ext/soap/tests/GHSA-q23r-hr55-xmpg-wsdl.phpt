@@ -1,7 +1,7 @@
 --TEST--
 GHSA-q23r-hr55-xmpg: Unbounded array walk on empty wsdl:arraySize
---EXTENSIONS--
-soap
+--SKIPIF--
+<?php require_once('skipif.inc'); ?>
 --INI--
 soap.wsdl_cache_enabled=0
 --FILE--
