@@ -18,5 +18,5 @@ zend_test.warn_on_startup=1
 echo "Hello world\n";
 ?>
 --EXPECTF--
-Warning: PHP Request Startup: Input variables exceeded 1. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+Warning: Unknown: Input variables exceeded 1. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
 Hello world%r(?:\n\nWarning: Test startup warning from zend_test in Unknown on line 0)?%r
