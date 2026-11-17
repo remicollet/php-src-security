@@ -101,7 +101,7 @@ $outerParams = [
 foreach ([false, true] as $keep) {
     $response = transact($tester->getAddr(), request(1, $keep, $outerParams, $body));
     echo 'keep ', $keep ? 'on' : 'off', ': ',
-        str_contains($response, 'smuggled') ? 'smuggled' : 'safe', "\n";
+        strpos($response, 'smuggled') !== false ? 'smuggled' : 'safe', "\n";
 }
 
 $body = 'A' . $hidden;
@@ -109,7 +109,7 @@ $outerParams['CONTENT_TYPE'] = 'application/octet-stream';
 $outerParams['CONTENT_LENGTH'] = '1';
 $response = transact($tester->getAddr(), request(1, true, $outerParams, $body));
 echo 'partial frame: ',
-    str_contains($response, 'smuggled') ? 'smuggled' : 'safe', "\n";
+    strpos($response, 'smuggled') !== false ? 'smuggled' : 'safe', "\n";
 
 $tester->terminate();
 $tester->close();
