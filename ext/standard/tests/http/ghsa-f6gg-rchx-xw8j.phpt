@@ -25,16 +25,16 @@ $serverCode = <<<'CODE'
             }
         }
         $request .= stream_get_contents($conn, strlen('opensec-sensitive-body'));
-        $result = str_contains($request, 'Authorization: Basic ')
-            && str_contains($request, 'X-Opensec-Request: validation')
-            && str_contains($request, 'opensec-sensitive-body')
+        $result = strpos($request, 'Authorization: Basic ') !== false
+            && strpos($request, 'X-Opensec-Request: validation') !== false
+            && strpos($request, 'opensec-sensitive-body') !== false
                 ? 'plaintext credentials and body'
                 : 'unexpected plaintext request';
     }
 
     fclose($conn);
     fclose($server);
-    phpt_notify(message: $result);
+    phpt_notify(WORKER_DEFAULT_NAME, $result);
 CODE;
 
 $clientCode = <<<'CODE'
@@ -53,7 +53,7 @@ $clientCode = <<<'CODE'
     echo phpt_wait();
 CODE;
 
-include sprintf('%s/../../../openssl/tests/ServerClientTestCase.inc', __DIR__);
+include sprintf('%s/ServerClientTestCase.inc', __DIR__);
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
 ?>
 --EXPECT--
