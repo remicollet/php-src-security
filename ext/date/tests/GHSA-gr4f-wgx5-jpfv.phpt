@@ -2,13 +2,12 @@
 GHSA-gr4f-wgx5-jpfv: DATEG(tzcache) use-after-free
 --CREDITS--
 Sebastian Bergmann
---CGI--
---ENV--
-QUERY_STRING=a=1&b=2
+--GET--
+a=1&b=2
 --SKIPIF--
 <?php
 if (!extension_loaded('session')) die('skip session extension not available');
-if (!extension_loaded('zend-test')) die('skip zend-test extension not available');
+if (!extension_loaded('test')) die('skip zend-test extension not available');
 ?>
 --INI--
 error_log="{TMP}/GHSA-gr4f-wgx5-jpfv.log"
