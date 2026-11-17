@@ -8,16 +8,16 @@ include "include.inc";
 
 $php = get_cgi_path();
 $script = __DIR__ . "/ghsa-5j3f-64r7-f564.target.php";
-file_put_contents($script, '<?php var_dump($_SERVER["PATH_INFO"] ?? null, $_SERVER["ORIG_PATH_INFO"] ?? null);');
+file_put_contents($script, '<?php var_dump(isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : null, isset($_SERVER["ORIG_PATH_INFO"]) ? $_SERVER["ORIG_PATH_INFO"] : null);');
 
-function run_cgi(string $php, array $env): void {
+function run_cgi($php, array $env) {
     /* Keep what is needed to start the binary (e.g. sanitizer runtime on Windows). */
     $base_env = array_filter([
         "PATH" => getenv("PATH"),
         "SystemRoot" => getenv("SystemRoot"),
     ], 'is_string');
     $p = proc_open(
-        [$php, "-n", "-d", "cgi.fix_pathinfo=1"],
+        escapeshellarg($php) . " -n -d cgi.fix_pathinfo=1",
         [0 => ["pipe", "r"], 1 => ["pipe", "w"]],
         $pipes,
         null,
