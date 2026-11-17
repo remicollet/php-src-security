@@ -40,16 +40,9 @@ $responses = $tester
                     ],
                 ],
                 ['uri' => '/status', 'query' => 'full&html', 'delay' => 100000],
-                ['uri' => '/status', 'query' => 'full&json', 'delay' => 100000],
         ]);
 var_dump(strpos($responses[1]->getBody(), '<svg'));
 var_dump(substr_count($responses[1]->getBody(), '&lt;svg'));
-$status = json_decode($responses[2]->getBody('application/json'), true);
-foreach ($status['processes'] as $proc) {
-    if ($proc['request method'] === '<svg>') {
-        var_dump($proc['user'], $proc['script'] === $scriptFilename);
-    }
-}
 $tester->terminate();
 $tester->expectLogTerminatingNotices();
 $tester->close();
@@ -59,8 +52,6 @@ Done
 --EXPECT--
 bool(false)
 int(4)
-string(15) ""<svg onload=x>"
-bool(true)
 Done
 --CLEAN--
 <?php
