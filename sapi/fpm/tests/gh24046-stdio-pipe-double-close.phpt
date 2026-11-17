@@ -16,7 +16,6 @@ pm = static
 pm.max_children = 1
 pm.max_requests = 1
 catch_workers_output = yes
-decorate_workers_output = no
 EOT;
 
 $code = <<<'EOT'
