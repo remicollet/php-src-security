@@ -7,36 +7,36 @@ soap
 
 function echo_back($data) { $GLOBALS['decoded'][] = $data; return null; }
 
-function request(string $arraySize, string $itemType = ''): string {
+function request($arraySize, $itemType = '') {
     $itemTypeAttribute = $itemType === '' ? '' : "SOAP-ENC:itemType=\"{$itemType}\"";
 
     return <<<XML
-        <?xml version="1.0"?>
-        <SOAP-ENV:Envelope
-            xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
-            xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<?xml version="1.0"?>
+<SOAP-ENV:Envelope
+    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-            <SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-                <echo_back>
-                    <data xsi:type="SOAP-ENC:Array" {$itemTypeAttribute} SOAP-ENC:arraySize="{$arraySize}">
-                        <item xsi:type="xsd:string">A</item>
-                        <item xsi:type="xsd:string">B</item>
-                        <item xsi:type="xsd:string">C</item>
-                    </data>
-                </echo_back>
-            </SOAP-ENV:Body>
-        </SOAP-ENV:Envelope>
-        XML;
+    <SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+        <echo_back>
+            <data xsi:type="SOAP-ENC:Array" {$itemTypeAttribute} SOAP-ENC:arraySize="{$arraySize}">
+                <item xsi:type="xsd:string">A</item>
+                <item xsi:type="xsd:string">B</item>
+                <item xsi:type="xsd:string">C</item>
+            </data>
+        </echo_back>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+XML;
 }
 
-function decode(SoapServer $server, string $request): string {
+function decode(SoapServer $server, $request) {
     ob_start();
     $server->handle($request);
     $response = ob_get_clean();
 
-    if (str_contains($response, '<SOAP-ENV:Fault>')) {
+    if (strpos($response, '<SOAP-ENV:Fault>') !== false) {
         return 'fault: ' . strip_tags($response);
     }
 
