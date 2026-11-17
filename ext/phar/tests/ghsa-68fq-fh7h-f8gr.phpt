@@ -1,10 +1,9 @@
 --TEST--
 GHSA-68fq-fh7h-f8gr (OpenSSL signature bypass by downgrading the algorithm to a keyless one)
---EXTENSIONS--
-phar
-openssl
 --SKIPIF--
 <?php
+if (!extension_loaded("phar")) die("skip phar extension not available");
+if (!extension_loaded("openssl")) die("skip openssl extension not available");
 if (!in_array("OpenSSL", Phar::getSupportedSignatures())) die("skip openssl support required");
 ?>
 --INI--
