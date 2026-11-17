@@ -43,7 +43,15 @@ $tester->request('bg=1')->expectBody('ok');
 usleep(1500000);
 $tester->request()->expectBody('ok');
 $tester->terminate();
-$tester->expectNoLogPattern('/unable to (remove|read)/');
+/* Tester::expectNoLogPattern() is not available here, check the log file directly */
+$logFile = substr(__FILE__, 0, -4) . '.log';
+for ($i = 0; $i < 50 && strpos((string) @file_get_contents($logFile), 'bye-bye') === false; $i++) {
+    usleep(100000);
+}
+$log = (string) @file_get_contents($logFile);
+if (preg_match('/unable to (remove|read)/', $log)) {
+    echo "ERROR: unexpected message in the log\n", $log;
+}
 $addr = $tester->getAddr();
 $tester->close();
 /* The background process also inherits the listening socket: wait until it is
