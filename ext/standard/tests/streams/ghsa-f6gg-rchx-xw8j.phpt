@@ -18,7 +18,7 @@ $serverCode = <<<'CODE'
 
     fclose($conn);
     fclose($server);
-    phpt_notify(message: $command);
+    phpt_notify(WORKER_DEFAULT_NAME, $command);
 CODE;
 
 $clientCode = <<<'CODE'
@@ -26,7 +26,7 @@ $clientCode = <<<'CODE'
     echo phpt_wait();
 CODE;
 
-include sprintf('%s/../../../openssl/tests/ServerClientTestCase.inc', __DIR__);
+include sprintf('%s/../http/ServerClientTestCase.inc', __DIR__);
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
 ?>
 --EXPECT--
