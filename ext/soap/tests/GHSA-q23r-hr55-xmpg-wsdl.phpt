@@ -12,46 +12,49 @@ const WSDL = __DIR__ . '/GHSA-q23r-hr55-xmpg-wsdl.wsdl';
 function itemType() { return ['A', 'B', 'C']; }
 function sizeOnly() { return ['A', 'B', 'C']; }
 
-function request(string $operation): string {
+function request($operation) {
     return <<<XML
-        <?xml version="1.0"?>
-        <env:Envelope
-            xmlns:env="http://www.w3.org/2003/05/soap-envelope"
-            xmlns:m="urn:arraysize">
+<?xml version="1.0"?>
+<env:Envelope
+    xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:m="urn:arraysize">
 
-            <env:Body>
-                <m:{$operation}/>
-            </env:Body>
-        </env:Envelope>
-        XML;
+    <env:Body>
+        <m:{$operation}/>
+    </env:Body>
+</env:Envelope>
+XML;
 }
 
 class ReplayClient extends SoapClient
 {
-    public function __construct(public string $arrayType) {
+    public $arrayType;
+
+    public function __construct($arrayType) {
+        $this->arrayType = $arrayType;
         parent::__construct(WSDL);
     }
 
-    public function __doRequest($request, $location, $action, $version, $oneWay = 0): ?string {
+    public function __doRequest($request, $location, $action, $version, $oneWay = 0) {
         return <<<XML
-            <?xml version="1.0"?>
-            <env:Envelope
-                xmlns:env="http://www.w3.org/2003/05/soap-envelope"
-                xmlns:ns1="urn:arraysize"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<?xml version="1.0"?>
+<env:Envelope
+    xmlns:env="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:ns1="urn:arraysize"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-                <env:Body>
-                    <ns1:{$this->arrayType}Response>
-                        <result xsi:type="ns1:{$this->arrayType}Array">
-                            <item xsi:type="xsd:string">A</item>
-                            <item xsi:type="xsd:string">B</item>
-                            <item xsi:type="xsd:string">C</item>
-                        </result>
-                    </ns1:{$this->arrayType}Response>
-                </env:Body>
-            </env:Envelope>
-            XML;
+    <env:Body>
+        <ns1:{$this->arrayType}Response>
+            <result xsi:type="ns1:{$this->arrayType}Array">
+                <item xsi:type="xsd:string">A</item>
+                <item xsi:type="xsd:string">B</item>
+                <item xsi:type="xsd:string">C</item>
+            </result>
+        </ns1:{$this->arrayType}Response>
+    </env:Body>
+</env:Envelope>
+XML;
     }
 }
 
@@ -64,7 +67,7 @@ foreach (['itemType', 'sizeOnly'] as $operation) {
     $response = ob_get_clean();
 
     preg_match('/arraySize="[^"]*"/', $response, $matches);
-    echo 'encode ', $operation, ' => ', $matches[0] ?? 'none', "\n";
+    echo 'encode ', $operation, ' => ', isset($matches[0]) ? $matches[0] : 'none', "\n";
 }
 
 foreach (['ItemType', 'SizeOnly'] as $arrayType) {
