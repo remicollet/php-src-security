@@ -14,8 +14,8 @@ GHSA-4646-p932-gw34: DTD entity references must not outlive their declarations
     <ns1:echo_><param0 xsi:type="xsd:string">x</param0></ns1:echo_>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
---EXTENSIONS--
-soap
+--SKIPIF--
+<?php if (!extension_loaded('soap')) die('skip soap extension not available'); ?>
 --FILE--
 <?php
 function echo_($x) {
