@@ -44,7 +44,18 @@ usleep(1500000);
 $tester->request()->expectBody('ok');
 $tester->terminate();
 $tester->expectNoLogPattern('/unable to (remove|read)/');
+$addr = $tester->getAddr();
 $tester->close();
+/* The background process also inherits the listening socket: wait until it is
+ * gone, otherwise the next FPM test cannot bind the same port. */
+for ($i = 0; $i < 50; $i++) {
+    $socket = @stream_socket_server('tcp://' . $addr);
+    if ($socket) {
+        fclose($socket);
+        break;
+    }
+    usleep(100000);
+}
 
 ?>
 Done
