@@ -101,12 +101,12 @@ unset($plainParams['CONTENT_TYPE']);
 foreach ([false, true] as $keep) {
     $response = transact($tester->getAddr(), request(1, $keep, $outerParams, 'A' . $hidden));
     echo 'keep ', $keep ? 'on' : 'off', ': ',
-        str_contains($response, 'smuggled') ? 'smuggled' : 'safe', ', ',
-        str_contains($response, 'outer 1') ? 'served' : 'not served', "\n";
+        strpos($response, 'smuggled') !== false ? 'smuggled' : 'safe', ', ',
+        strpos($response, 'outer 1') !== false ? 'served' : 'not served', "\n";
     /* The only worker must still serve new connections. */
     foreach ([1, 2] as $n) {
         $response = transact($tester->getAddr(), request(1, false, $plainParams, ''));
-        echo "  next connection $n: ", str_contains($response, 'outer 0') ? 'served' : 'not served', "\n";
+        echo "  next connection $n: ", strpos($response, 'outer 0') !== false ? 'served' : 'not served', "\n";
     }
 }
 
