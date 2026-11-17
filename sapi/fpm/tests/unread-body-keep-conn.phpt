@@ -15,9 +15,9 @@ function record(int $type, string $content, int $id): string
 function params(array $params): string
 {
     $encoded = '';
-    $encodeLength = static fn(int $length): string => $length < 128
-        ? chr($length)
-        : pack('N', $length | 0x80000000);
+    $encodeLength = static function (int $length): string {
+        return $length < 128 ? chr($length) : pack('N', $length | 0x80000000);
+    };
     foreach ($params as $name => $value) {
         $encoded .= $encodeLength(strlen($name)) . $encodeLength(strlen($value)) . $name . $value;
     }
@@ -35,7 +35,7 @@ function request(int $id, bool $keep, array $params, string $stdin): string
 
 function transact(string $address, string $request): string
 {
-    [$host, $port] = explode(':', $address);
+    list($host, $port) = explode(':', $address);
     $socket = fsockopen($host, (int) $port);
     stream_set_timeout($socket, 3);
     $written = 0;
