@@ -5,6 +5,7 @@ GHSA-68fq-fh7h-f8gr (OpenSSL signature bypass by downgrading the algorithm to a 
 if (!extension_loaded("phar")) die("skip phar extension not available");
 if (!extension_loaded("openssl")) die("skip openssl extension not available");
 if (!in_array("OpenSSL", Phar::getSupportedSignatures())) die("skip openssl support required");
+if (!in_array("SHA-256", Phar::getSupportedSignatures())) die("skip sha256 support required");
 ?>
 --INI--
 phar.readonly=0
@@ -17,7 +18,7 @@ $pkey = '';
 openssl_pkey_export($private, $pkey, null, ['config' => __DIR__ . '/files/openssl.cnf']);
 $pubkey = openssl_pkey_get_details($private)['key'];
 
-function build(string $file, string $pkey): string
+function build($file, $pkey)
 {
     $phar = new Phar($file);
     $phar['main.php'] = '<?php echo "GENUINE\n";';
@@ -28,7 +29,7 @@ function build(string $file, string $pkey): string
 }
 
 // a phar built in this process comes back from the cache, so each case is read under its own name
-function open(string $file, string $archive, ?string $pubkey): void
+function open($file, $archive, $pubkey)
 {
     file_put_contents($file, $archive);
     if ($pubkey !== null) {
@@ -42,7 +43,7 @@ function open(string $file, string $archive, ?string $pubkey): void
     }
 }
 
-function downgrade_phar(string $archive): string
+function downgrade_phar($archive)
 {
     // the last 12 bytes are [length][algorithm]["GBMB"], the signature sits just before them
     $siglen = unpack('V', substr($archive, -12, 4))[1];
@@ -51,7 +52,7 @@ function downgrade_phar(string $archive): string
     return $message . hash('sha256', $message, true) . pack('V', 0x0003) . 'GBMB'; // 0x0003 is PHAR_SIG_SHA256
 }
 
-function downgrade_tar(string $archive): string
+function downgrade_tar($archive)
 {
     for ($offset = 0; $offset + 512 <= strlen($archive); ) {
         $size = (int) octdec(trim(substr($archive, $offset + 124, 12), " \0")); // octal size field of a 512 byte header
@@ -69,7 +70,7 @@ function downgrade_tar(string $archive): string
     throw new RuntimeException('no signature entry');
 }
 
-function downgrade_zip(string $archive): string
+function downgrade_zip($archive)
 {
     $eocd = strrpos($archive, "PK\x05\x06");
     $cdir = unpack('V', substr($archive, $eocd + 16, 4))[1]; // the eocd holds the directory offset at +16 and the archive comment length at +20
