@@ -460,6 +460,9 @@ php_mysqlnd_greet_read(void * _packet)
 		/* And a length of the server scramble in one byte */
 		packet->authentication_plugin_data.l = uint1korr(pad_start + 2);
 		if (packet->authentication_plugin_data.l > SCRAMBLE_LENGTH) {
+			/* the rest of the scramble has to be in the packet */
+			BAIL_IF_NOT_ENOUGH_DATA_EX(packet->authentication_plugin_data.l - SCRAMBLE_LENGTH);
+
 			/* more data*/
 			char * new_auth_plugin_data = emalloc(packet->authentication_plugin_data.l);
 			if (!new_auth_plugin_data) {
