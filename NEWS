@@ -42,12 +42,6 @@ Backported from 8.2.36
   . Fixed GHSA-mmf9-xm3v-hg2x (Denial of service through folded HTTP response
     headers). (CVE-2026-127960) (Jakub Zelenka)
 
-Backported from 8.3.19
-
-- Core:
-  . Fixed GHSA-rwp7-7vc6-8477 (Reference counting in php_request_shutdown
-    causes Use-After-Free). (CVE-2024-11235) (ilutov)
-
 Backported from 8.2.35
 
 - Core:
