@@ -48,12 +48,6 @@ Backported from 8.1.27
   . Fixed bug GH-12705 (Segmentation fault in fpm_status_export_to_zval).
     (Patrick Prasse)
 
-Backported from 8.3.19
-
-- Core:
-  . Fixed GHSA-rwp7-7vc6-8477 (Reference counting in php_request_shutdown
-    causes Use-After-Free). (CVE-2024-11235) (ilutov)
-
 Backported from 8.2.35
 
 - Core:
