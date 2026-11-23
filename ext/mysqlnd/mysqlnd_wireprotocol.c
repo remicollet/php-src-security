@@ -1547,6 +1547,7 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_MEMORY_POOL_CHUNK * row_buffer, zv
 	zend_uchar * p = rbp;
 	zend_uchar * null_ptr, bit;
 	zval **current_field, **end_field, **start_field;
+	size_t null_bytes;
 
 	DBG_ENTER("php_mysqlnd_rowp_read_binary_protocol");
 
@@ -1557,7 +1558,7 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_MEMORY_POOL_CHUNK * row_buffer, zv
 	end_field = (start_field = fields) + field_count;
 
 	/* The status byte and the complete null bitmap must fit the row. */
-	size_t null_bytes = field_count / 8 + 1 + (field_count % 8 > 6);
+	null_bytes = field_count / 8 + 1 + (field_count % 8 > 6);
 	if (rbs == 0 || null_bytes > rbs - 1) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Malformed server packet. Incomplete null bitmap");
 		DBG_RETURN(FAIL);
