@@ -431,9 +431,11 @@ php_mysqlnd_greet_read(void * _packet, MYSQLND_CONN_DATA * conn TSRMLS_DC)
 	}
 
 	if (packet->server_capabilities & CLIENT_PLUGIN_AUTH) {
+		size_t remaining_size;
+
 		BAIL_IF_NO_MORE_DATA;
 		/* The server is 5.5.x and supports authentication plugins */
-		size_t remaining_size = packet->header.size - (size_t)(p - buf);
+		remaining_size = packet->header.size - (size_t)(p - buf);
 		if (remaining_size == 0) {
 			/* Might be better to fail but this will fail anyway */
 			packet->auth_protocol = estrdup("");
@@ -441,6 +443,7 @@ php_mysqlnd_greet_read(void * _packet, MYSQLND_CONN_DATA * conn TSRMLS_DC)
 			/* Check if NUL present */
 			char *null_terminator = memchr(p, '\0', remaining_size);
 			size_t auth_protocol_len;
+			char *auth_protocol;
 			if (null_terminator) {
 				/* If present, do basically estrdup */
 				auth_protocol_len = null_terminator - (char *)p;
@@ -448,7 +451,7 @@ php_mysqlnd_greet_read(void * _packet, MYSQLND_CONN_DATA * conn TSRMLS_DC)
 				/* If not present, copy the rest of the buffer */
 				auth_protocol_len = remaining_size;
 			}
-			char *auth_protocol = emalloc(auth_protocol_len + 1);
+			auth_protocol = emalloc(auth_protocol_len + 1);
 			memcpy(auth_protocol, p, auth_protocol_len);
 			auth_protocol[auth_protocol_len] = '\0';
 			packet->auth_protocol = auth_protocol;
