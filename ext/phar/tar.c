@@ -317,7 +317,7 @@ int phar_parse_tarfile(php_stream* fp, char *fname, int fname_len, char *alias, 
 				pefree(entry.filename, myphar->is_persistent);
 			}
 			php_stream_close(fp);
-			phar_destroy_phar_data(myphar);
+			phar_destroy_phar_data(myphar TSRMLS_CC);
 			return FAILURE;
 		}
 		entry.uncompressed_filesize = entry.compressed_filesize = size;
@@ -332,7 +332,7 @@ int phar_parse_tarfile(php_stream* fp, char *fname, int fname_len, char *alias, 
 				pefree(entry.filename, myphar->is_persistent);
 			}
 			php_stream_close(fp);
-			phar_destroy_phar_data(myphar);
+			phar_destroy_phar_data(myphar TSRMLS_CC);
 			return FAILURE;
 		}
 
