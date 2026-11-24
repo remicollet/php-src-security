@@ -431,9 +431,11 @@ php_mysqlnd_greet_read(void * _packet, MYSQLND_CONN_DATA * conn TSRMLS_DC)
 	}
 
 	if (packet->server_capabilities & CLIENT_PLUGIN_AUTH) {
+		size_t remaining_size;
+
 		BAIL_IF_NO_MORE_DATA;
 		/* The server is 5.5.x and supports authentication plugins */
-		size_t remaining_size = packet->header.size - (size_t)(p - buf);
+		remaining_size = packet->header.size - (size_t)(p - buf);
 		if (remaining_size == 0) {
 			/* Might be better to fail but this will fail anyway */
 			packet->auth_protocol = estrdup("");
@@ -441,6 +443,7 @@ php_mysqlnd_greet_read(void * _packet, MYSQLND_CONN_DATA * conn TSRMLS_DC)
 			/* Check if NUL present */
 			char *null_terminator = memchr(p, '\0', remaining_size);
 			size_t auth_protocol_len;
+			char *auth_protocol;
 			if (null_terminator) {
 				/* If present, do basically estrdup */
 				auth_protocol_len = null_terminator - (char *)p;
@@ -448,7 +451,7 @@ php_mysqlnd_greet_read(void * _packet, MYSQLND_CONN_DATA * conn TSRMLS_DC)
 				/* If not present, copy the rest of the buffer */
 				auth_protocol_len = remaining_size;
 			}
-			char *auth_protocol = emalloc(auth_protocol_len + 1);
+			auth_protocol = emalloc(auth_protocol_len + 1);
 			memcpy(auth_protocol, p, auth_protocol_len);
 			auth_protocol[auth_protocol_len] = '\0';
 			packet->auth_protocol = auth_protocol;
@@ -1547,6 +1550,7 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_MEMORY_POOL_CHUNK * row_buffer, zv
 	zend_uchar * p = rbp;
 	zend_uchar * null_ptr, bit;
 	zval **current_field, **end_field, **start_field;
+	size_t null_bytes;
 
 	DBG_ENTER("php_mysqlnd_rowp_read_binary_protocol");
 
@@ -1557,7 +1561,7 @@ php_mysqlnd_rowp_read_binary_protocol(MYSQLND_MEMORY_POOL_CHUNK * row_buffer, zv
 	end_field = (start_field = fields) + field_count;
 
 	/* The status byte and the complete null bitmap must fit the row. */
-	size_t null_bytes = field_count / 8 + 1 + (field_count % 8 > 6);
+	null_bytes = field_count / 8 + 1 + (field_count % 8 > 6);
 	if (rbs == 0 || null_bytes > rbs - 1) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Malformed server packet. Incomplete null bitmap");
 		DBG_RETURN(FAIL);
