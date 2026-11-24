@@ -3643,9 +3643,9 @@ PHP_FUNCTION(imap_mail_compose)
 			if(Z_TYPE_PP(pvalue) == IS_ARRAY) {
 				disp_param = tmp_param = NULL;
 				while (zend_hash_get_current_data(Z_ARRVAL_PP(pvalue), (void **) &disp_data) == SUCCESS) {
+					zend_hash_get_current_key(Z_ARRVAL_PP(pvalue), &key, &ind, 0);
 					CHECK_HEADER_INJECTION(key, 0, "body disposition key");
 					disp_param = mail_newbody_parameter();
-					zend_hash_get_current_key(Z_ARRVAL_PP(pvalue), &key, &ind, 0);
 					disp_param->attribute = cpystr(key);
 					convert_to_string_ex(disp_data);
 					CHECK_HEADER_INJECTION(Z_STRVAL_PP(disp_data), 0, "body disposition value");
@@ -3683,9 +3683,9 @@ PHP_FUNCTION(imap_mail_compose)
 			if (Z_TYPE_PP(pvalue) == IS_ARRAY) {
 				disp_param = tmp_param = NULL;
 				while (zend_hash_get_current_data(Z_ARRVAL_PP(pvalue), (void **) &disp_data) == SUCCESS) {
+					zend_hash_get_current_key(Z_ARRVAL_PP(pvalue), &key, &ind, 0);
 					CHECK_HEADER_INJECTION(key, 0, "body type.parameters key");
 					disp_param = mail_newbody_parameter();
-					zend_hash_get_current_key(Z_ARRVAL_PP(pvalue), &key, &ind, 0);
 					disp_param->attribute = cpystr(key);
 					convert_to_string_ex(disp_data);
 					CHECK_HEADER_INJECTION(Z_STRVAL_PP(disp_data), 0, "body type.parameters value");

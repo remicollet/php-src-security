@@ -300,7 +300,18 @@ typedef struct  st_mysqlnd_packet_sha256_pk_request_response {
 
 PHPAPI void php_mysqlnd_scramble(zend_uchar * const buffer, const zend_uchar * const scramble, const zend_uchar * const pass, size_t pass_len);
 
-unsigned long	php_mysqlnd_net_field_length(zend_uchar **packet);
+/* The following structure implements an optional value,
+ * which forces the caller to check if the value was correctly read, for safety reasons. */
+typedef struct st_mysqlnd_optional_uint64_t {
+	uint64_t value;
+	zend_bool has_value;
+} MYSQLND_OPTIONAL_UINT64_T;
+
+/* must not be equal to MYSQLND_NULL_LENGTH, but larger than 2**24 */
+#define MYSQLND_INVALID_NET_FIELD_LENGTH ((unsigned long) -2)
+
+/* Returns MYSQLND_INVALID_NET_FIELD_LENGTH on error */
+unsigned long	php_mysqlnd_net_field_length(zend_uchar **packet, size_t remaining_size);
 zend_uchar *	php_mysqlnd_net_store_length(zend_uchar *packet, uint64_t length);
 size_t			php_mysqlnd_net_store_length_size(uint64_t length);
 

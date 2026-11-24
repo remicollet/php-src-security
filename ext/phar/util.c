@@ -1530,14 +1530,15 @@ static int phar_call_openssl_signverify(int is_sign, php_stream *fp, off_t end, 
 			efree(retval_ptr);
 			return FAILURE;
 		case IS_BOOL:
-			efree(retval_ptr);
 			if (Z_BVAL_P(retval_ptr)) {
+				efree(retval_ptr);
 				*signature = estrndup(Z_STRVAL_P(zsig), Z_STRLEN_P(zsig));
 				*signature_len = Z_STRLEN_P(zsig);
 				zval_dtor(zsig);
 				efree(zsig);
 				return SUCCESS;
 			}
+			efree(retval_ptr);
 			zval_dtor(zsig);
 			efree(zsig);
 			return FAILURE;

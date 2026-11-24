@@ -112,6 +112,11 @@ static inline void strip_header(char *header_bag, char *lc_header_bag,
 	char *lc_line = lc_header_bag;
 
 	while (*lc_line != '\0') {
+		const char *lc_colon;
+		char *lc_next;
+		size_t tail_len;
+		char *line;
+
 		if (strncmp(lc_line, lc_header_name, name_len) != 0) {
 			lc_line = next_header_line(lc_line);
 			continue;
@@ -119,7 +124,7 @@ static inline void strip_header(char *header_bag, char *lc_header_bag,
 
 		/* the whitespace RFC 7230 forbids before the colon is tolerated by some
 		 * servers, so it must not hide the header from us either */
-		const char *lc_colon = lc_line + name_len;
+		lc_colon = lc_line + name_len;
 		while (*lc_colon == ' ' || *lc_colon == '\t') {
 			lc_colon++;
 		}
@@ -129,7 +134,7 @@ static inline void strip_header(char *header_bag, char *lc_header_bag,
 			continue;
 		}
 
-		char *lc_next = next_header_line(lc_line);
+		lc_next = next_header_line(lc_line);
 		while (*lc_next == ' ' || *lc_next == '\t') {
 			lc_next = next_header_line(lc_next);
 		}
@@ -143,8 +148,8 @@ static inline void strip_header(char *header_bag, char *lc_header_bag,
 			}
 		}
 
-		size_t tail_len = strlen(lc_next) + 1;
-		char *line = header_bag + (lc_line - lc_header_bag);
+		tail_len = strlen(lc_next) + 1;
+		line = header_bag + (lc_line - lc_header_bag);
 
 		memmove(line, header_bag + (lc_next - lc_header_bag), tail_len);
 		memmove(lc_line, lc_next, tail_len);
@@ -905,6 +910,10 @@ finish:
 
 			char new_path[HTTP_HEADER_BLOCK_SIZE];
 			char loc_path[HTTP_HEADER_BLOCK_SIZE];
+			php_url *new_resource;
+			int default_port;
+			zend_bool same_origin;
+			int new_flags;
 
 			*new_path='\0';
 			if (strlen(location)<8 || (strncasecmp(location, "http://", sizeof("http://")-1) &&
@@ -945,14 +954,14 @@ finish:
 				strlcpy(new_path, location, sizeof(new_path));
 			}
 
-			php_url *new_resource = php_url_parse(new_path);
+			new_resource = php_url_parse(new_path);
 			if (new_resource == NULL) {
 				php_stream_wrapper_log_error(wrapper, options TSRMLS_CC, "Invalid redirect URL! %s", new_path);
 				goto out;
 			}
 
-			int default_port = use_ssl ? 443 : 80;
-			zend_bool same_origin = resource->scheme && new_resource->scheme
+			default_port = use_ssl ? 443 : 80;
+			same_origin = resource->scheme && new_resource->scheme
 				&& !strcasecmp(resource->scheme, new_resource->scheme)
 				&& resource->host && new_resource->host
 				&& !strcasecmp(resource->host, new_resource->host)
@@ -983,7 +992,7 @@ finish:
 				CHECK_FOR_CNTRL_CHARS(resource->pass)
 				CHECK_FOR_CNTRL_CHARS(resource->path)
 			}
-			int new_flags = HTTP_WRAPPER_REDIRECTED | (flags & HTTP_WRAPPER_STRIP_AUTH);
+			new_flags = HTTP_WRAPPER_REDIRECTED | (flags & HTTP_WRAPPER_STRIP_AUTH);
 			if (!same_origin) {
 				new_flags |= HTTP_WRAPPER_STRIP_AUTH;
 			}

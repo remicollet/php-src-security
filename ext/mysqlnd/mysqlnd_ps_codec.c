@@ -62,11 +62,15 @@ static inline void ps_fetch_over_read_error(zend_uchar ** row TSRMLS_DC)
 static inline zend_bool ps_fetch_is_packet_over_read_with_variable_length(const unsigned int pack_len,
 		zend_uchar ** row, const zend_uchar *p, unsigned int length TSRMLS_DC)
 {
+	size_t length_len;
+
 	if (pack_len == 0) {
 		return 0;
 	}
-	size_t length_len = *row - p;
-	if (length_len > pack_len || length > pack_len - length_len) {
+	length_len = *row - p;
+	/* This assert should never fire, otherwise we invoked UB earlier */
+	ZEND_ASSERT(length_len <= pack_len);
+	if (length > pack_len - length_len) {
 		ps_fetch_over_read_error(row TSRMLS_CC);
 		return 1;
 	}
@@ -103,13 +107,13 @@ ps_fetch_from_1_to_8_bytes(zval * zv, const MYSQLND_FIELD * const field, unsigne
 	char tmp[22];
 	size_t tmp_len = 0;
 	zend_bool is_bit = field->type == MYSQL_TYPE_BIT;
-
-	if (UNEXPECTED(ps_fetch_is_packet_over_read_with_static_length(pack_len, row, byte_count TSRMLS_CC))) {
-		return;
-	}
-
 	DBG_ENTER("ps_fetch_from_1_to_8_bytes");
 	DBG_INF_FMT("zv=%p byte_count=%u", zv, byte_count);
+
+	if (UNEXPECTED(ps_fetch_is_packet_over_read_with_static_length(pack_len, row, byte_count TSRMLS_CC))) {
+		DBG_VOID_RETURN;
+	}
+
 	if (field->flags & UNSIGNED_FLAG) {
 		uint64_t uval = 0;
 
@@ -276,7 +280,9 @@ ps_fetch_time(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_le
 	const zend_uchar *p = *row;
 	DBG_ENTER("ps_fetch_time");
 
-	if ((length = php_mysqlnd_net_field_length(row))) {
+	if ((length = php_mysqlnd_net_field_length(row, pack_len))) {
+		zend_uchar * to;
+
 		if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
 			return;
 		}
@@ -284,7 +290,7 @@ ps_fetch_time(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_le
 			return;
 		}
 
-		zend_uchar * to= *row;
+		to= *row;
 
 		t.time_type = MYSQLND_TIMESTAMP_TIME;
 		t.neg			= (zend_bool) to[0];
@@ -327,7 +333,9 @@ ps_fetch_date(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_le
 	const zend_uchar *p = *row;
 	DBG_ENTER("ps_fetch_date");
 
-	if ((length = php_mysqlnd_net_field_length(row))) {
+	if ((length = php_mysqlnd_net_field_length(row, pack_len))) {
+		zend_uchar *to;
+
 		if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
 			return;
 		}
@@ -335,7 +343,7 @@ ps_fetch_date(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_le
 			return;
 		}
 
-		zend_uchar *to= *row;
+		to= *row;
 
 		t.time_type= MYSQLND_TIMESTAMP_DATE;
 		t.neg= 0;
@@ -372,7 +380,9 @@ ps_fetch_datetime(zval * zv, const MYSQLND_FIELD * const field, unsigned int pac
 	const zend_uchar *p = *row;
 	DBG_ENTER("ps_fetch_datetime");
 
-	if ((length = php_mysqlnd_net_field_length(row))) {
+	if ((length = php_mysqlnd_net_field_length(row, pack_len))) {
+		zend_uchar * to;
+
 		if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
 			return;
 		}
@@ -380,7 +390,7 @@ ps_fetch_datetime(zval * zv, const MYSQLND_FIELD * const field, unsigned int pac
 			return;
 		}
 
-		zend_uchar * to = *row;
+		to = *row;
 
 		t.time_type = MYSQLND_TIMESTAMP_DATETIME;
 		t.neg	 = 0;
@@ -423,11 +433,11 @@ ps_fetch_string(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_
 	  to write \0 to the row buffer
 	*/
 	const zend_uchar *p = *row;
-	const unsigned long length = php_mysqlnd_net_field_length(row);
-	if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
-		return;
-	}
+	const unsigned long length = php_mysqlnd_net_field_length(row, pack_len);
 	DBG_ENTER("ps_fetch_string");
+	if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
+		DBG_VOID_RETURN;
+	}
 	DBG_INF_FMT("len = %lu", length);
 	DBG_INF("copying from the row buffer");
 	ZVAL_STRINGL(zv, (char *)*row, length, 1);
@@ -443,7 +453,7 @@ static void
 ps_fetch_bit(zval * zv, const MYSQLND_FIELD * const field, unsigned int pack_len, zend_uchar ** row TSRMLS_DC)
 {
 	const zend_uchar *p = *row;
-	unsigned long length = php_mysqlnd_net_field_length(row);
+	unsigned long length = php_mysqlnd_net_field_length(row, pack_len);
 	if (UNEXPECTED(ps_fetch_is_packet_over_read_with_variable_length(pack_len, row, p, length TSRMLS_CC))) {
 		return;
 	}

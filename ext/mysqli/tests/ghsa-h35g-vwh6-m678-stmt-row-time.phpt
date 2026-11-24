@@ -1,7 +1,7 @@
 --TEST--
 GHSA-h35g-vwh6-m678 (mysqlnd leaks partial content of the heap - stmt row time buffer over-read)
---EXTENSIONS--
-mysqli
+--SKIPIF--
+<?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
 require_once 'fake_server.inc';
