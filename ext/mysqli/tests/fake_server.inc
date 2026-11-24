@@ -311,21 +311,6 @@ class my_mysqli_fake_packet_generator
         return $pr1;
     }
 
-    public function server_stmt_prepare_response_start($num_field)
-    {
-        $pr1 = new my_mysqli_fake_packet();
-        $pr1->packet_length = "0c0000";
-        $pr1->packet_number = "01";
-        $pr1->response_code = '00'; // OK
-        $pr1->statement_id = '01000000';
-        $pr1->num_fields = $num_field;
-        $pr1->num_params = '0000';
-        $pr1->filler = '00';
-        $pr1->warnings = '0000';
-
-        return $pr1;
-    }
-
     public function server_stmt_prepare_response_end($packer_number)
     {
         $pr3 = new my_mysqli_fake_packet();

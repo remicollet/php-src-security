@@ -1,9 +1,8 @@
 --TEST--
 GHSA-r6x9-5r99-36j7 (Various packet overreads in mysqlnd_writeprotocol.c - sha256 public key response shorter than expected)
 --SKIPIF--
-<?php require_once('skipif.inc'); ?>
---SKIPIF--
 <?php
+require_once('skipif.inc');
 if (!extension_loaded("openssl"))
     die("skip mysqlnd is built without SSL support, so the sha256_password plugin is not available");
 ?>
