@@ -2833,6 +2833,11 @@ static int exif_process_IFD_in_MAKERNOTE(image_info_type *ImageInfo, char * valu
 
 	for (de=0;de<NumDirEntries;de++) {
 		size_t offset = 2 + 12 * de;
+		if (offset > (size_t)data_len) {
+			/* MN_OFFSET_GUESS: the data ends before this entry, data_len - offset would wrap */
+			exif_error_docref("exif_read_data#error_ifd" EXIFERR_CC, ImageInfo, E_WARNING, "Illegal IFD size: 0x%04X > 0x%04X", (int)offset, data_len);
+			return FALSE;
+		}
 		if (!exif_process_IFD_TAG(ImageInfo, dir_start + offset,
 								  offset_base, data_len - offset, displacement, section_index, 0, maker_note->tag_table TSRMLS_CC)) {
 			return FALSE;
