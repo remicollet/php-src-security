@@ -1,7 +1,7 @@
 --TEST--
 mysqlnd rejects a binary DATE field whose declared length is too short
---EXTENSIONS--
-mysqli
+--SKIPIF--
+<?php require_once('skipif.inc'); ?>
 --FILE--
 <?php
 require_once 'fake_server.inc';
