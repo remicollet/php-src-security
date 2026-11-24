@@ -672,8 +672,24 @@ static char *multipart_buffer_read_body(multipart_buffer *self, unsigned int *le
 {
 	char buf[FILLUNIT], *out=NULL;
 	unsigned int total_bytes=0, read_bytes=0;
+	int too_long = 0;
 
 	while((read_bytes = multipart_buffer_read(self, buf, sizeof(buf), NULL TSRMLS_CC))) {
+		if (too_long) {
+			continue;
+		}
+		/* PHP 5 strings hold at most INT_MAX bytes, and total_bytes + read_bytes + 1 must not wrap:
+		 * drop the value, but read the rest of the part so that the next one is parsed */
+		if (read_bytes > (unsigned int)INT_MAX - 1 - total_bytes) {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "POST variable value too long, value discarded");
+			too_long = 1;
+			if (out) {
+				efree(out);
+				out = NULL;
+			}
+			total_bytes = 0;
+			continue;
+		}
 		out = erealloc(out, total_bytes + read_bytes + 1);
 		memcpy(out + total_bytes, buf, read_bytes);
 		total_bytes += read_bytes;
