@@ -29,4 +29,4 @@ print "done!";
 [*] Received: %x
 [*] Sending - OK Auth Response [affected rows as NULL length]: 0700000200fb0002000000
 [*] connect_errno: 0
-done!
+done!%A

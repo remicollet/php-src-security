@@ -1374,12 +1374,15 @@ php_mysqlnd_rset_field_read(void * _packet, MYSQLND_CONN_DATA * conn TSRMLS_DC)
 		}
 	}
 
-	BAIL_IF_NOT_ENOUGH_DATA_EX(1 + 2 + 4 + 1 + 2 + 1 + 2);
+	BAIL_IF_NOT_ENOUGH_DATA;
 	/* 1 byte length */
 	if (12 != *p) {
 		DBG_ERR_FMT("Protocol error. Server sent false length. Expected 12 got %d", (int) *p);
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Protocol error. Server sent false length. Expected 12");
 	}
+
+	/* the length byte and the 12 fixed bytes that follow */
+	BAIL_IF_NOT_ENOUGH_DATA_EX(1 + 2 + 4 + 1 + 2 + 1 + 2);
 	p++;
 
 	meta->charsetnr = uint2korr(p);

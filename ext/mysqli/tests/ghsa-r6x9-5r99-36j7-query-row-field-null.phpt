@@ -46,4 +46,4 @@ array(2) {
 }
 [*] Received: %x
 [*] Server finished
-done!
+done!%A

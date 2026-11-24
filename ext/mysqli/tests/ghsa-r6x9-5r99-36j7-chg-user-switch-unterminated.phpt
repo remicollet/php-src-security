@@ -40,4 +40,4 @@ Warning: mysqli::change_user(): Premature end of data (mysqlnd_wireprotocol.c:%d
 
 Warning: mysqli::change_user(): CHANGE_USER packet shorter than expected in %s on line %d
 bool(false)
-done!
+done!%A

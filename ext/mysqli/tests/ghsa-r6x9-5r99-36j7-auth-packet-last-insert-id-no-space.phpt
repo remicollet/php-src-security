@@ -33,4 +33,4 @@ print "done!";
 Warning: mysqli::%s(): Premature end of data (mysqlnd_wireprotocol.c:%d) in %s on line %d
 
 Warning: mysqli::%s(): AUTH_RESPONSE packet shorter than expected in %s on line %d%A
-done!
+done!%A

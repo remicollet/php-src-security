@@ -47,4 +47,4 @@ Warning: mysqli::query(): RSET_HEADER packet shorter than expected in %s on line
 
 Warning: mysqli::query(): Error reading result set's header in %s on line %d
 [*] Server finished
-done!
+done!%A

@@ -37,6 +37,6 @@ Warning: mysqli::select_db(): Premature end of data (mysqlnd_wireprotocol.c:%d) 
 
 Warning: mysqli::select_db(): OK packet shorter than expected in %s on line %d
 
-Warning: mysqli::select_db(): Error while reading INIT_DB's response packet. PID=%d in %s on line %d
+Warning: mysqli::select_db(): Error while reading INIT_DB's %s packet. PID=%d in %s on line %d
 bool(false)
-done!
+done!%A

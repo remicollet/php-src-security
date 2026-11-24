@@ -39,4 +39,4 @@ Warning: mysqli::prepare(): Protocol error. Server sent false length. Expected 1
 Warning: mysqli::prepare(): Premature end of data (mysqlnd_wireprotocol.c:%d) in %s on line %d
 
 Warning: mysqli::prepare(): Result set field packet shorter than expected in %s on line %d
-done!
+done!%A

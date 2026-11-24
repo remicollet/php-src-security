@@ -3,8 +3,10 @@ GHSA-r6x9-5r99-36j7 (Various packet overreads in mysqlnd_writeprotocol.c - sha25
 --SKIPIF--
 <?php
 require_once('skipif.inc');
-if (!extension_loaded("openssl"))
-    die("skip mysqlnd is built without SSL support, so the sha256_password plugin is not available");
+ob_start();
+phpinfo(INFO_MODULES);
+if (strpos(ob_get_clean(), 'auth_plugin_sha256_password') === false)
+    die("skip mysqlnd is built without the sha256_password plugin");
 ?>
 --FILE--
 <?php
@@ -43,4 +45,4 @@ Warning: Error while receiving public key. PID=%d in %s on line %d
 [*] Sending - Server OK: 0700000400000002000000
 [*] Received: %x
 [*] Server finished
-done!
+done!%A

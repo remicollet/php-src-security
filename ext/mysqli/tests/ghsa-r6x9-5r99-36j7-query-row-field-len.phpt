@@ -42,6 +42,8 @@ print "done!";
 [*] Sending - Malicious Query Response for data strval field [field length over-read]: 01000001023200000203646566087068705f74657374046461746104646174610673747276616c0673747276616c0ce000c8000000fd01100000003200000303646566087068705f74657374046461746104646174610673747276616c0673747276616c0ce000c8000000fd011000000005000004fe00002200060000050474657374fc05000006fe00002200
 
 Warning: mysqli_result::fetch_assoc(): Malformed server packet. Field length pointing after end of packet in %s on line %d
+
+Warning: mysqli_result::%s(): Error while reading a row in %s on line %d
 [*] Received: %x
 [*] Server finished
-done!
+done!%A

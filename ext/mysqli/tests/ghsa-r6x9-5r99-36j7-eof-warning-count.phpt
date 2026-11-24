@@ -38,6 +38,5 @@ Warning: mysqli::multi_query(): Premature end of data (mysqlnd_wireprotocol.c:%d
 
 Warning: mysqli::multi_query(): EOF packet shorter than expected in %s on line %d
 
-Warning: mysqli::multi_query(): Error while reading SET_OPTION's response packet. PID=%d in %s on line %d
-[*] Received: %x
-done!
+Warning: mysqli::multi_query(): Error while reading SET_OPTION's %s packet. PID=%d in %s on line %d%A
+done!%A

@@ -45,4 +45,4 @@ Warning: mysqli::query(): RSET_HEADER packet additional data length is past 82 b
 
 Warning: mysqli::query(): Error reading result set's header in %s on line %d
 [*] Server finished
-done!
+done!%A

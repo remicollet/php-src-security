@@ -29,4 +29,4 @@ print "done!";
 [*] Received: %x
 [*] Sending - OK Auth Response [affected rows on 2 bytes]: 0900000200fc34120002000000
 [*] connect_errno: 0
-done!
+done!%A

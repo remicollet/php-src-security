@@ -40,4 +40,4 @@ Warning: mysqli::change_user(): CHANGE_USER packet shorter than expected in %s o
 bool(false)
 [*] Received: %x
 [*] Server finished
-done!
+done!%A
